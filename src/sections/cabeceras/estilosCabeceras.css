@@ -1,0 +1,85 @@
+  /* Habilitar inercia en iOS para zonas de scroll */
+  .scroll-x-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ajuste fino para la lista de recomendaciones (evitar que la barra tape el texto) */
+  .recommendation-seach_list {
+    padding-bottom: 8px;
+  }
+
+  .recommendation-seach_list-wrapper {
+    position: relative;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .recommendation-seach_list {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recommendation-seach_list-inner {
+    display: flex;
+    width: fit-content;
+    margin: 0 -4px;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  dl,
+  o .recommendation-seach_list-item a:hover {
+    background-color: #ffa423;
+    border-color: #ffa423;
+    text-decoration: none;
+    color: #fff;
+  }
+
+  /* Efecto Hover para los botones de recomendación (Bootstrap tiene :hover básico, 
+       pero para cambios de color específicos es mejor mantenerlo en CSS) */
+  .btn-recommendation:hover {
+    background-color: #ffa423 !important;
+    border-color: #ffa423 !important;
+    color: #fff !important;
+  }
+
+  /* Ajuste para que en escritorio los botones circulares sean un poco más grandes 
+       (Bootstrap no tiene clases de ancho exacto en píxeles como 75px o 100px) */
+  .item-circular img {
+    max-width: 75px;
+  }
+
+  @media (min-width: 768px) {
+    .item-circular img {
+      max-width: 100px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .cabecera:after {
+      content: "\2190 Desliza para ver más categorías \2192";
+      position: absolute;
+      bottom: 3px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      font-size: 14px;
+      color: #222;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+  }
+
+  .recommendation-seach_list-item a {
+    white-space: nowrap;
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4d4d4d;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+  }
