@@ -1,4 +1,4 @@
-# 🚀 Hites — Automatizador de Secciones HTML
+# 🚀 Automatizador de Secciones HTML
 
 Herramienta interna para generar bloques de HTML estático listos para copiar y pegar en el CMS de Hites. Pega datos desde Excel y obtén código HTML auto-contenido al instante.
 
@@ -85,7 +85,7 @@ Si ya tienes SourceTree instalado y configurado con tu cuenta de Bitbucket:
 1. Abre **SourceTree**.
 2. Haz clic en **+ New** → **Clone from URL**.
 3. Pega la URL del repositorio de Bitbucket del proyecto.
-4. En **Destination Path**, elige una carpeta en tu computador (ej: `C:\Users\TuNombre\Documents\sourcetree\hites-mkt`).
+4. En **Destination Path**, elige una carpeta en tu computador (ej: `C:\Users\TuNombre\Documents\sourcetree\creador-de-contenido`).
 5. Haz clic en **Clone**.
 6. Espera a que se descarguen todos los archivos.
 
