@@ -23,13 +23,15 @@ export const obtenerHtmlCabecera = (bloquesImagenes: string, bloquesEnlaces: str
   </div>`
     : '';
 
+  const claseJustify = tieneEnlaces ? 'justify-content-md-start' : 'justify-content-md-center';
+
   // 3. Renderizamos el contenedor principal e inyectamos las variables
   return `<style>
 ${cssCrudo}
 </style>
 <section class="cabecera position-relative w-100 pb-6 pb-md-2">
   <div
-    class="d-flex flex-nowrap overflow-x-auto scroll-x-touch justify-content-between justify-content-md-start px-2 pb-3 pb-md-2 pt-2 pt-md-1"
+    class="d-flex flex-nowrap overflow-x-auto scroll-x-touch justify-content-between ${claseJustify} px-2 pb-3 pb-md-2 pt-2 pt-md-1"
     id="cabecera-wrapper">
 ${bloquesImagenes}
   </div>

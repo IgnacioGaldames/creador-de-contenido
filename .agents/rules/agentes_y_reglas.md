@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 Agentes y Reglas Actualizadas del Proyecto Hites eCommerce HTML Generator
 
 Esta documentación está diseñada para ser utilizada como contexto estricto por cualquier IA o agente de desarrollo ("Antigravity", Cursor, Copilot, etc.) que asista en el proyecto.
@@ -26,7 +30,7 @@ El archivo [NombreSeccion].tsx contiene los estados (useState), la captura del <
 
 PORTAPAPELES: NO uses navigator.clipboard directamente en las secciones. TODAS las secciones DEBEN importar y utilizar el custom hook useProcesarYCopiar (src/hooks/useProcesarYCopiar.ts).
 
-BOTÓN DE COPIAR: NO crees botones de copiado manuales. TODAS las secciones DEBEN importar y utilizar el componente <BotonGenerarCopiar /> (src/components/BotonGenerarCopiar.tsx).
+BOTÓN DE COPIAR: NO crees botones de copiado manuales. TODAS las secciones DEBEN importar y utilizar el componente <BotonGenerarCopiar /> (src/components/BotonGenerarCopiar.tsx). Todas las secciones nuevas ocupan el copiado automático en el portapapeles después de pegar los datos y procesar los datos.
 
 Utilidades Compartidas (Helpers):
 
@@ -75,5 +79,7 @@ Reglas de Código y UX
 Usar TypeScript de forma estricta. Evitar any a toda costa.
 
 El código final exportado para el CMS suele requerir etiquetas <picture>, <source> para responsive, y atributos data- para analítica y filtrado (ej. data-department, data-position, data-size). Mantener esa estructura rigurosamente.
+
+Mantener la simplicidad del proyecto, debe ser muy fácil e intruitivo de usar para el usuario final y de editar para el desarrollador.
 
 Comunicarse de forma directa, priorizando la entrega de código estructurado y refactorizaciones limpias.
