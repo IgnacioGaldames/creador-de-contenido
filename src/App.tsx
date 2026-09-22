@@ -2,11 +2,13 @@
 import { useState } from 'react'
 import Cabeceras from './sections/cabeceras/Cabeceras'
 import Cupones from './sections/cupones/Cupones'
+import Inpage from './sections/inpage/Inpage'
 import PuntosRetiro from './sections/puntosRetiro/PuntosRetiro'
 
 const SECCIONES_DISPONIBLES = [
   { id: 'cabeceras', nombre: '🏷️ Cabeceras HTML' },
   { id: 'cupones', nombre: '🎫 Cupones HTML' },
+  { id: 'inpage', nombre: '📄 Inpage HTML' },
   { id: 'puntos', nombre: '📍 Puntos de Retiro' }
 ]
 
@@ -37,13 +39,15 @@ function App() {
         <main className="col-md-9 p-5 bg-light" style={{ overflowY: 'auto' }}>
           <h1 className="display-5 mb-2">
             {seccionActiva === 'cabeceras' ? '  Cabeceras HTML' :
-              seccionActiva === 'cupones' ? '  Cupones HTML' : '📍 Puntos de Retiro'}
+              seccionActiva === 'cupones' ? '  Cupones HTML' :
+              seccionActiva === 'inpage' ? '📄 Inpage HTML' : '📍 Puntos de Retiro'}
           </h1>
           <p className="text-muted mb-4">Herramienta de automatización modular.</p>
 
           {/* Renderizado Condicional */}
           {seccionActiva === 'cabeceras' && <Cabeceras />}
           {seccionActiva === 'cupones' && <Cupones />}
+          {seccionActiva === 'inpage' && <Inpage />}
           {seccionActiva === 'puntos' && <PuntosRetiro />}
         </main>
 
