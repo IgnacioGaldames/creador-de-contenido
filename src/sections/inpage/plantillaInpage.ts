@@ -2,7 +2,7 @@
 import cssCrudo from './estilosInpage.css?raw';
 
 /**
- * Genera un bloque <picture> para una imagen del inpage.
+ * Genera un bloque .col-12 individual con <picture>, <h2> y <p> opcionales.
  */
 export const generarBloqueImagen = (
   depto: string,
@@ -10,12 +10,23 @@ export const generarBloqueImagen = (
   nombreArchivo: string,
   nombreProducto: string,
   marca: string,
-  posicion: number
+  posicion: number,
+  titulo: string,
+  descripcion: string
 ): string => {
   const anioActual = new Date().getFullYear();
   const rutaBase = `images/inpages/${anioActual}/${depto}/${sku}/${nombreArchivo}?$staticlink$`;
 
-  return `          <picture>
+  const bloqueH2 = titulo.trim()
+    ? `\n          <h2>${titulo.trim()}</h2>`
+    : '';
+
+  const bloqueP = descripcion.trim()
+    ? `\n          <p>${descripcion.trim()}</p>`
+    : '';
+
+  return `        <div class="col-12 mb-3">
+          <picture>
             <source data-size="mobile" media="(max-width: 767.98px)"
               srcset="${rutaBase}">
             <source data-size="desktop" media="(min-width: 768px)"
@@ -26,7 +37,8 @@ export const generarBloqueImagen = (
               alt="${nombreProducto} ${marca}"
               title="${nombreProducto} ${marca}"
               data-department="${depto}" data-position="${posicion}" data-size="12" data-zone="inpage">
-          </picture>`;
+          </picture>${bloqueH2}${bloqueP}
+        </div>`;
 };
 
 /**
@@ -34,8 +46,22 @@ export const generarBloqueImagen = (
  */
 export const generarHtmlInpage = (
   bloquesContenido: string,
-  bloquesImagenes: string
+  bloquesImagenes: string,
+  textoLegal: string
 ): string => {
+  const bloqueContenidoHtml = bloquesContenido.trim()
+    ? `        <div class="col-12 mb-3">
+          <!-- contenido -->
+${bloquesContenido}
+        </div>\n`
+    : '';
+
+  const bloqueLegalHtml = textoLegal.trim()
+    ? `\n        <div class="col-12 mb-3">
+          <p class="texto-legal">${textoLegal.trim()}</p>
+        </div>`
+    : '';
+
   return `<style type="text/css">
 ${cssCrudo}
 </style>
@@ -43,17 +69,9 @@ ${cssCrudo}
   <section class="categoria">
     <div class="container">
       <div class="row align-items-center justify-content-center">
-        <div class="col-12 mb-3">
-          <!-- contenido -->
-${bloquesContenido}
-
-        </div>
-        <div class="col-12 ">
-          <!-- imagenes -->
+${bloqueContenidoHtml}
 ${bloquesImagenes}
-          <!-- end imagenes -->
-        </div>
-
+${bloqueLegalHtml}
       </div>
     </div>
   </section>

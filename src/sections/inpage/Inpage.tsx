@@ -11,6 +11,13 @@ export default function Inpage() {
   const [datosCSV, setDatosCSV] = useState('')
   const [htmlGenerado, setHtmlGenerado] = useState('')
 
+  // Textos por imagen
+  const [titulosImagenes, setTitulosImagenes] = useState<string[]>([])
+  const [descripcionesImagenes, setDescripcionesImagenes] = useState<string[]>([])
+
+  // Texto legal global
+  const [textoLegal, setTextoLegal] = useState('')
+
   // 🛠️ Custom Hook
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
@@ -18,25 +25,31 @@ export default function Inpage() {
   const generarHTML = (): string => {
     if (!datosCSV.trim()) return ''
 
-    // Parsear CSV — una sola línea: SKU,NOMBRE,MARCA,PROVEEDOR,DEPTO,SECCIÓN,FAMILIA
     const columnas = datosCSV.trim().replace(/\|$/, '').split(',')
     const sku = columnas[0]?.trim() || ''
     const nombre = columnas[1]?.trim() || ''
     const marca = columnas[2]?.trim() || ''
-    // columnas[3] = PROVEEDOR (no se usa en el template)
     const depto = columnas[4]?.trim() || ''
-    // columnas[5] = SECCIÓN, columnas[6] = FAMILIA (no se usan en el template)
 
     if (!sku || !depto) return ''
 
-    // Generar bloques <picture> por cada imagen subida
+    // Generar bloques <picture> por cada imagen — ahora cada uno en su propio .col-12
     const bloquesImagenesHtml = archivosImagenes
       .map((archivo, index) =>
-        generarBloqueImagen(depto, sku, archivo.name, nombre, marca, index + 1)
+        generarBloqueImagen(
+          depto,
+          sku,
+          archivo.name,
+          nombre,
+          marca,
+          index + 1,
+          titulosImagenes[index] || '',
+          descripcionesImagenes[index] || ''
+        )
       )
       .join('\n')
 
-    const htmlFinal = generarHtmlInpage(bloquesContenido, bloquesImagenesHtml)
+    const htmlFinal = generarHtmlInpage(bloquesContenido, bloquesImagenesHtml, textoLegal)
     setHtmlGenerado(htmlFinal)
     return htmlFinal
   }
@@ -56,17 +69,37 @@ export default function Inpage() {
     } else {
       setHtmlGenerado('')
     }
-  }, [bloquesContenido, archivosImagenes, datosCSV])
+  }, [bloquesContenido, archivosImagenes, datosCSV, titulosImagenes, descripcionesImagenes, textoLegal])
 
   // 📁 MANEJAR SUBIDA DE IMÁGENES
   const manejarArchivos = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      // Convertir FileList a array y ordenar por nombre
       const archivos = Array.from(e.target.files).sort((a, b) =>
         a.name.localeCompare(b.name, undefined, { numeric: true })
       )
       setArchivosImagenes(archivos)
+      // Inicializar arrays de títulos y descripciones vacíos
+      setTitulosImagenes(new Array(archivos.length).fill(''))
+      setDescripcionesImagenes(new Array(archivos.length).fill(''))
     }
+  }
+
+  // ✏️ ACTUALIZAR TÍTULO DE UNA IMAGEN
+  const actualizarTitulo = (index: number, valor: string) => {
+    setTitulosImagenes(prev => {
+      const copia = [...prev]
+      copia[index] = valor
+      return copia
+    })
+  }
+
+  // ✏️ ACTUALIZAR DESCRIPCIÓN DE UNA IMAGEN
+  const actualizarDescripcion = (index: number, valor: string) => {
+    setDescripcionesImagenes(prev => {
+      const copia = [...prev]
+      copia[index] = valor
+      return copia
+    })
   }
 
   // 🎨 MUNDO VISUAL
@@ -99,22 +132,56 @@ export default function Inpage() {
         </small>
       </div>
 
-      {/* Lista visual de archivos */}
+      {/* Lista de archivos + formulario de títulos/descripciones por imagen */}
       {archivosImagenes.length > 0 && (
         <div className="mb-3">
-          <p className="fw-bold mb-1">📁 Imágenes cargadas ({archivosImagenes.length}):</p>
-          <ul className="list-group list-group-flush" style={{ fontSize: '0.85rem' }}>
-            {archivosImagenes.map((archivo, i) => (
-              <li key={`${archivo.name}-${i}`} className="list-group-item py-1 font-monospace">
-                {i + 1}. {archivo.name}
-              </li>
-            ))}
-          </ul>
+          <p className="fw-bold mb-2">📁 Imágenes cargadas ({archivosImagenes.length}):</p>
+          {archivosImagenes.map((archivo, i) => (
+            <div key={`${archivo.name}-${i}`} className="card mb-2 border">
+              <div className="card-body py-2 px-3">
+                <p className="font-monospace mb-2 fw-semibold" style={{ fontSize: '0.85rem' }}>
+                  {i + 1}. {archivo.name}
+                </p>
+                <div className="row g-2">
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      placeholder={`Título <h2> (opcional)`}
+                      value={titulosImagenes[i] || ''}
+                      onChange={(e) => actualizarTitulo(i, e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      placeholder={`Descripción <p> (opcional)`}
+                      value={descripcionesImagenes[i] || ''}
+                      onChange={(e) => actualizarDescripcion(i, e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* === PASO 3: CSV del Producto === */}
-      <h5 className="card-title mb-3">Paso 3: Pegar datos del producto (CSV)</h5>
+      {/* === PASO 3: Texto Legal === */}
+      <h5 className="card-title mb-3">Paso 3: Texto legal (opcional)</h5>
+      <div className="mb-3">
+        <textarea
+          className="form-control"
+          rows={2}
+          placeholder="Ej: *Precios válidos hasta agotar stock. Imágenes referenciales..."
+          value={textoLegal}
+          onChange={(e) => setTextoLegal(e.target.value)}
+        />
+      </div>
+
+      {/* === PASO 4: CSV del Producto === */}
+      <h5 className="card-title mb-3">Paso 4: Pegar datos del producto (CSV)</h5>
       <div className="mb-3 bg-white p-3 border rounded">
         <p className="card-text mb-2 fw-bold">Estructura del CSV:</p>
         <div className="table-responsive mb-2">
