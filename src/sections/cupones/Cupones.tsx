@@ -1,5 +1,5 @@
 // src/sections/cupones/Cupones.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { obtenerPlantillaCupon } from './plantillaCupon'
 import { scriptCaducidad } from './scriptCaducidad'
 import { scriptCopiaCupon } from './scriptCopiaCupon'
@@ -25,7 +25,6 @@ const convertirFechaExcel = (numeroSerie: string) => {
 export default function Cupones() {
   // 🧠 ESTADOS BÁSICOS
   const [datosCsv, setDatosCsv] = useState('')
-  const [htmlGenerado, setHtmlGenerado] = useState('')
   const [esCarrusel, setEsCarrusel] = useState(true)
   const [esContador, setEsContador] = useState(false)
   const [fechaContador, setFechaContador] = useState('2026-12-31T23:59')
@@ -33,9 +32,8 @@ export default function Cupones() {
   // 🛠️ INVOCAMOS EL HOOK
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
-  // ⚙️ FUNCIÓN PARA GENERAR EL HTML
-  const generarHTML = () => {
-    
+  // ⚙️ HTML DERIVADO (sin setState dentro de useMemo)
+  const htmlGenerado = useMemo(() => {
     if (!datosCsv.trim()) return ''
 
     const registros = datosCsv.split('|').filter(r => r.trim() !== '' && !r.includes('CSV: ESTADO'))
@@ -71,7 +69,7 @@ export default function Cupones() {
       ? `\n${obtenerScriptContador(sufijoSeccion, fechaContador)}`
       : ''
 
-    const contenedorFinal = `<style>
+    return `<style>
 ${cssCrudo}
 </style><section class="container-fluid px-0 mt-15px mt-md-40px my-0 pb-0 pb-md-2" id="cupones">
 <div class="row">
@@ -87,27 +85,21 @@ ${cssCrudo}
 </section>
 ${scriptCaducidad}${scriptContadorFinal}
 ${scriptCopiaCupon}`
-
-    setHtmlGenerado(contenedorFinal)
-    return contenedorFinal // 👈 Devolvemos el HTML
-  }
-
-  // ⚡ FUNCIÓN PUENTE
-  const manejarAccion = () => {
-    const nuevoHtml = generarHTML()
-    if (nuevoHtml) {
-      ejecutarCopia(nuevoHtml)
-    }
-  }
-
-  // 🤖 VIGILANTE AUTOMÁTICO
-  useEffect(() => {
-    if (datosCsv.trim()) {
-      manejarAccion()
-    } else {
-      setHtmlGenerado('')
-    }
   }, [datosCsv, esCarrusel, esContador, fechaContador])
+
+  // ⚡ FUNCIÓN PUENTE (estabilizada con useCallback)
+  const manejarAccion = useCallback(() => {
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
+    }
+  }, [htmlGenerado, ejecutarCopia])
+
+  // 🤖 VIGILANTE AUTOMÁTICO — copia al clipboard cuando cambia el HTML
+  useEffect(() => {
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
+    }
+  }, [htmlGenerado, ejecutarCopia])
 
   // 🎨 MUNDO VISUAL
   return (
@@ -232,7 +224,7 @@ ${scriptCopiaCupon}`
             className="form-control font-monospace bg-dark text-warning"
             rows={10}
             value={htmlGenerado}
-            onChange={(e) => setHtmlGenerado(e.target.value)}
+            readOnly
           />
         </div>
       )}

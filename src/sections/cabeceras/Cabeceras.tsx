@@ -1,5 +1,5 @@
 // src/sections/cabeceras/Cabeceras.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { obtenerHtmlCabecera, obtenerBloqueMarca } from './plantillaHtml'
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar' // 👈 1. Importamos nuestra nueva herramienta
@@ -9,13 +9,12 @@ import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar' // 👈 1. I
 export default function Cabeceras() {
   // 🧠 ESTADOS BÁSICOS (¡Adiós a copiado y generado de aquí!)
   const [datosExcel, setDatosExcel] = useState('')
-  const [htmlGenerado, setHtmlGenerado] = useState('')
 
   // 🛠️ 2. Invocamos nuestro Custom Hook para obtener la función y los estados visuales
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
-  // ⚙️ FUNCIÓN PARA GENERAR EL HTML
-  const generarHTML = () => {
+  // ⚙️ HTML DERIVADO
+  const htmlGenerado = useMemo(() => {
     if (!datosExcel.trim()) return ''
 
     const registros = datosExcel.split('|')
@@ -53,28 +52,22 @@ export default function Cabeceras() {
       .filter(bloque => bloque !== '')
       .join('\n')
 
-    const htmlFinal = obtenerHtmlCabecera(bloquesImagenes, bloquesEnlaces)
-
-    setHtmlGenerado(htmlFinal)
-    return htmlFinal // 👈 Es vital devolver (return) el texto para usarlo inmediatamente
-  }
+    return obtenerHtmlCabecera(bloquesImagenes, bloquesEnlaces)
+  }, [datosExcel])
 
   // ⚡ 3. FUNCIÓN PUENTE: Genera el código y le pide al Hook que lo copie
-  const manejarAccion = () => {
-    const nuevoHtml = generarHTML() // Guardamos lo que devuelve la función
-    if (nuevoHtml) {
-      ejecutarCopia(nuevoHtml) // Le entregamos el texto a nuestro hook
+  const manejarAccion = useCallback(() => {
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado) // Le entregamos el texto a nuestro hook
     }
-  }
+  }, [htmlGenerado, ejecutarCopia])
 
   // 🤖 VIGILANTE AUTOMÁTICO
   useEffect(() => {
-    if (datosExcel.trim() !== '') {
-      manejarAccion()
-    } else {
-      setHtmlGenerado('')
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
     }
-  }, [datosExcel])
+  }, [htmlGenerado, ejecutarCopia])
 
   // 🎨 MUNDO VISUAL
   return (
@@ -140,7 +133,7 @@ export default function Cabeceras() {
             className="form-control font-monospace bg-dark text-warning"
             rows={10}
             value={htmlGenerado}
-            onChange={(e) => setHtmlGenerado(e.target.value)}
+            readOnly
           />
         </div>
       )}

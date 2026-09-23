@@ -1,5 +1,5 @@
 // src/sections/inpage/Inpage.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { generarBloqueImagen, generarHtmlInpage } from './plantillaInpage'
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar'
@@ -11,7 +11,6 @@ export default function Inpage() {
   const [bloquesContenido, setBloquesContenido] = useState('')
   const [archivosImagenes, setArchivosImagenes] = useState<File[]>([])
   const [datosCSV, setDatosCSV] = useState('')
-  const [htmlGenerado, setHtmlGenerado] = useState('')
   const [procesandoImagenes, setProcesandoImagenes] = useState(false)
   const [imagenesZip, setImagenesZip] = useState<Blob | null>(null)
 
@@ -25,8 +24,8 @@ export default function Inpage() {
   // 🛠️ Custom Hook
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
-  // ⚙️ GENERAR HTML
-  const generarHTML = (): string => {
+  // ⚙️ GENERAR HTML (derivado de estados)
+  const htmlGenerado = useMemo(() => {
     if (!datosCSV.trim()) return ''
 
     const columnas = datosCSV.trim().replace(/\|$/, '').split(',')
@@ -53,27 +52,22 @@ export default function Inpage() {
       )
       .join('\n')
 
-    const htmlFinal = generarHtmlInpage(bloquesContenido, bloquesImagenesHtml, textoLegal)
-    setHtmlGenerado(htmlFinal)
-    return htmlFinal
-  }
+    return generarHtmlInpage(bloquesContenido, bloquesImagenesHtml, textoLegal)
+  }, [bloquesContenido, archivosImagenes, datosCSV, titulosImagenes, descripcionesImagenes, textoLegal])
 
   // ⚡ FUNCIÓN PUENTE
-  const manejarAccion = () => {
-    const nuevoHtml = generarHTML()
-    if (nuevoHtml) {
-      ejecutarCopia(nuevoHtml)
+  const manejarAccion = useCallback(() => {
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
     }
-  }
+  }, [htmlGenerado, ejecutarCopia])
 
-  // 🤖 VIGILANTE AUTOMÁTICO — se dispara al cambiar cualquier input
+  // 🤖 VIGILANTE AUTOMÁTICO — se dispara al cambiar el HTML generado
   useEffect(() => {
-    if (datosCSV.trim() !== '') {
-      manejarAccion()
-    } else {
-      setHtmlGenerado('')
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
     }
-  }, [bloquesContenido, archivosImagenes, datosCSV, titulosImagenes, descripcionesImagenes, textoLegal])
+  }, [htmlGenerado, ejecutarCopia])
 
   // 📁 MANEJAR SUBIDA DE IMÁGENES
   const manejarArchivos = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -278,7 +272,7 @@ export default function Inpage() {
             className="form-control font-monospace bg-dark text-warning"
             rows={12}
             value={htmlGenerado}
-            onChange={(e) => setHtmlGenerado(e.target.value)}
+            readOnly
           />
         </div>
       )}

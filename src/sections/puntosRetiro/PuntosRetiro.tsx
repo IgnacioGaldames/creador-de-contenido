@@ -1,15 +1,14 @@
 // src/sections/puntosRetiro/PuntosRetiro.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { obtenerPlantillaPuntosRetiro } from './plantillaPuntosRetiro'
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar'
 
 export default function PuntosRetiro() {
   const [datosCsv, setDatosCsv] = useState('')
-  const [htmlGenerado, setHtmlGenerado] = useState('')
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
-  const generarHTML = () => {
+  const htmlGenerado = useMemo(() => {
     if (!datosCsv.trim()) return ''
 
     // Separamos el texto por pipes "|" o saltos de línea (dependiendo cómo se copie de excel)
@@ -29,7 +28,7 @@ export default function PuntosRetiro() {
       const zonaRaw = columnas[7]?.trim().toLowerCase() || 'santiago';
       
       // Normalizar el tipo para que coincida con el data-tipo del HTML
-      let tipoColumna = (columnas[3]?.trim() || '').toLowerCase();
+      const tipoColumna = (columnas[3]?.trim() || '').toLowerCase();
       let tipoNormalizado = 'hites'; // Por defecto
       if (tipoColumna.includes('stk') || tipoColumna.includes('starken')) {
         tipoNormalizado = 'starken';
@@ -49,25 +48,20 @@ export default function PuntosRetiro() {
     const jsonString = JSON.stringify(arrayTiendas, null, 2);
 
     // Enviamos este String JSON a nuestra plantilla
-    const htmlFinal = obtenerPlantillaPuntosRetiro(jsonString);
-    setHtmlGenerado(htmlFinal);
-    return htmlFinal;
-  }
+    return obtenerPlantillaPuntosRetiro(jsonString);
+  }, [datosCsv])
 
-  const manejarAccion = () => {
-    const nuevoHtml = generarHTML()
-    if (nuevoHtml) {
-      ejecutarCopia(nuevoHtml)
+  const manejarAccion = useCallback(() => {
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
     }
-  }
+  }, [htmlGenerado, ejecutarCopia])
 
   useEffect(() => {
-    if (datosCsv.trim()) {
-      manejarAccion()
-    } else {
-      setHtmlGenerado('')
+    if (htmlGenerado) {
+      ejecutarCopia(htmlGenerado)
     }
-  }, [datosCsv])
+  }, [htmlGenerado, ejecutarCopia])
 
   return (
     <div className="card p-4 shadow-sm mb-4">
