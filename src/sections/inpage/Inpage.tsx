@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { generarBloqueImagen, generarHtmlInpage } from './plantillaInpage'
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar'
+import JSZip from 'jszip'
+import { procesarImagen } from '../../utils/procesamientoImagenes'
 
 export default function Inpage() {
   // 🧠 ESTADOS
@@ -10,6 +12,8 @@ export default function Inpage() {
   const [archivosImagenes, setArchivosImagenes] = useState<File[]>([])
   const [datosCSV, setDatosCSV] = useState('')
   const [htmlGenerado, setHtmlGenerado] = useState('')
+  const [procesandoImagenes, setProcesandoImagenes] = useState(false)
+  const [imagenesZip, setImagenesZip] = useState<Blob | null>(null)
 
   // Textos por imagen
   const [titulosImagenes, setTitulosImagenes] = useState<string[]>([])
@@ -72,12 +76,25 @@ export default function Inpage() {
   }, [bloquesContenido, archivosImagenes, datosCSV, titulosImagenes, descripcionesImagenes, textoLegal])
 
   // 📁 MANEJAR SUBIDA DE IMÁGENES
-  const manejarArchivos = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const manejarArchivos = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const archivos = Array.from(e.target.files).sort((a, b) =>
         a.name.localeCompare(b.name, undefined, { numeric: true })
       )
       setArchivosImagenes(archivos)
+      setImagenesZip(null)
+      setProcesandoImagenes(true)
+      const zip = new JSZip()
+      for (const archivo of archivos) {
+        try {
+          const resultado = await procesarImagen(archivo, { ancho: 700, formato: 'webp', calidad: 0.8 })
+          zip.file(resultado.nombre, resultado.blob)
+        } catch {
+          // El archivo original continúa disponible para generar el HTML.
+        }
+      }
+      setImagenesZip(await zip.generateAsync({ type: 'blob' }))
+      setProcesandoImagenes(false)
       // Inicializar arrays de títulos y descripciones vacíos
       setTitulosImagenes(new Array(archivos.length).fill(''))
       setDescripcionesImagenes(new Array(archivos.length).fill(''))
@@ -130,6 +147,28 @@ export default function Inpage() {
         <small className="text-muted">
           Selecciona una o varias imágenes. Se usará el nombre del archivo para construir la ruta del CMS.
         </small>
+        {procesandoImagenes && (
+          <div className="alert alert-info mt-3 mb-0 py-2">Preparando imágenes optimizadas (700 px, WebP)...</div>
+        )}
+        {!procesandoImagenes && imagenesZip && (
+          <div className="d-flex align-items-center gap-3 mt-3">
+            <span className="small text-success">✓ Imágenes listas para descargar en WebP.</span>
+            <button
+              className="btn btn-outline-success btn-sm"
+              type="button"
+              onClick={() => {
+                const url = URL.createObjectURL(imagenesZip)
+                const enlace = document.createElement('a')
+                enlace.href = url
+                enlace.download = 'imagenes-inpage-webp.zip'
+                enlace.click()
+                URL.revokeObjectURL(url)
+              }}
+            >
+              Descargar imágenes (.zip)
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Lista de archivos + formulario de títulos/descripciones por imagen */}

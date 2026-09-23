@@ -4,12 +4,14 @@ import Cabeceras from './sections/cabeceras/Cabeceras'
 import Cupones from './sections/cupones/Cupones'
 import Inpage from './sections/inpage/Inpage'
 import PuntosRetiro from './sections/puntosRetiro/PuntosRetiro'
+import ProcesadorImagenes from './sections/procesadorImagenes/ProcesadorImagenes'
 
 const SECCIONES_DISPONIBLES = [
   { id: 'cabeceras', nombre: '🏷️ Cabeceras HTML' },
   { id: 'cupones', nombre: '🎫 Cupones HTML' },
   { id: 'inpage', nombre: '📄 Inpage HTML' },
-  { id: 'puntos', nombre: '📍 Puntos de Retiro' }
+  { id: 'puntos', nombre: '📍 Puntos de Retiro' },
+  { id: 'imagenes', nombre: '🖼️ Procesar imágenes' }
 ]
 
 function App() {
@@ -40,7 +42,8 @@ function App() {
           <h1 className="display-5 mb-2">
             {seccionActiva === 'cabeceras' ? '  Cabeceras HTML' :
               seccionActiva === 'cupones' ? '  Cupones HTML' :
-              seccionActiva === 'inpage' ? '📄 Inpage HTML' : '📍 Puntos de Retiro'}
+            seccionActiva === 'inpage' ? '📄 Inpage HTML' :
+            seccionActiva === 'puntos' ? '📍 Puntos de Retiro' : '🖼️ Procesar imágenes'}
           </h1>
           <p className="text-muted mb-4">Herramienta de automatización modular.</p>
 
@@ -49,6 +52,7 @@ function App() {
           {seccionActiva === 'cupones' && <Cupones />}
           {seccionActiva === 'inpage' && <Inpage />}
           {seccionActiva === 'puntos' && <PuntosRetiro />}
+          {seccionActiva === 'imagenes' && <ProcesadorImagenes />}
         </main>
 
       </div>

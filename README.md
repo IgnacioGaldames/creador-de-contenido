@@ -15,7 +15,8 @@ Herramienta interna para generar bloques de HTML estático listos para copiar y 
 5. [Método Rápido: Script de 1 Clic](#-método-rápido-script-de-1-clic)
 6. [Método Manual: Usando la Terminal](#-método-manual-usando-la-terminal)
 7. [Estructura del Proyecto](#-estructura-del-proyecto)
-8. [Solución de Problemas Frecuentes](#-solución-de-problemas-frecuentes)
+8. [Procesador de imágenes](#-procesador-de-imágenes)
+9. [Solución de Problemas Frecuentes](#-solución-de-problemas-frecuentes)
 
 ---
 
@@ -201,6 +202,12 @@ hites-mkt/
 ├── package.json               ← Lista de dependencias del proyecto
 └── README.md                  ← 📖 Este archivo
 ```
+
+### 🖼️ Procesador de imágenes
+
+La sección **Procesar imágenes** permite seleccionar o arrastrar un lote de imágenes y elegir el ancho, formato (WebP, JPEG o PNG) y calidad. Cada archivo se procesa localmente conservando la proporción y se puede descargar individualmente o como un ZIP; las imágenes no se suben a ningún servidor.
+
+En **Inpage**, el Paso 2 mantiene su flujo actual y, después de seleccionar las imágenes, prepara además un ZIP optimizado a 700 px de ancho, WebP y calidad 80% para descargarlo directamente.
 
 ### Para Diseñadores
 
