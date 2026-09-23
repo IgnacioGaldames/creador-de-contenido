@@ -42,7 +42,7 @@ ${cssCrudo}
 <div id="inpage_generico">
   <section class="categoria">
     <div class="container">
-      <div class="row align-items-center justify-content-center text-left">
+      <div class="row align-items-center justify-content-center">
         <div class="col-12 mb-3">
           <!-- contenido -->
 ${bloquesContenido}
