@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { obtenerPlantillaCupon } from './plantillaCupon'
 import { scriptCaducidad } from './scriptCaducidad'
-import { scriptCopiaCupon } from './scriptCopiaCupon'
+import { obtenerScriptCopiaCupon } from './scriptCopiaCupon'
 import { obtenerPlantillaContador } from '../general/contador/plantillaContador'
 import { obtenerScriptContador } from '../general/contador/scriptContador'
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
@@ -30,6 +30,7 @@ export default function Cupones() {
   const [esContador, setEsContador] = useState(false)
   const [fechaContador, setFechaContador] = useState('2026-12-31T23:59')
   const [tituloSeccion, setTituloSeccion] = useState('Cupones BLACK \n            <span class="articulat-heavy text-uppercase-">¡Dale un ahorro extra!</span>')
+  const [mensajeCompartir, setMensajeCompartir] = useState('¡Cupones Black en Hites.com!')
 
   // 🖼️ ESTADOS IMAGEN TÍTULO
   const [imagenDesktop, setImagenDesktop] = useState<File | null>(null)
@@ -165,8 +166,8 @@ ${bloqueTitulo}
   </div>${bloqueLegal}
 </section>
 ${scriptCaducidad}${scriptContadorFinal}
-${scriptCopiaCupon}`
-  }, [datosCsv, esCarrusel, esContador, fechaContador, tituloSeccion, rutaDesktop, rutaMobile, textoLegal, colorFondo, tipoFondo])
+${obtenerScriptCopiaCupon(mensajeCompartir)}`
+  }, [datosCsv, esCarrusel, esContador, fechaContador, tituloSeccion, mensajeCompartir, rutaDesktop, rutaMobile, textoLegal, colorFondo, tipoFondo])
 
   // ⚡ FUNCIÓN PUENTE (estabilizada con useCallback)
   const manejarAccion = useCallback(() => {
@@ -374,6 +375,21 @@ ${scriptCopiaCupon}`
           />
         </div>
       )}
+
+      {/* 💬 Mensaje para compartir */}
+      <div className="mb-3 bg-white p-3 border rounded">
+        <label htmlFor="mensajeCompartir" className="form-label fw-bold">
+          💬 Mensaje para compartir:
+        </label>
+        <input
+          type="text"
+          id="mensajeCompartir"
+          className="form-control"
+          placeholder="Ej: ¡Cupones Black en Hites.com!"
+          value={mensajeCompartir}
+          onChange={(e) => setMensajeCompartir(e.target.value)}
+        />
+      </div>
 
       {/* 📝 Texto Legal */}
       <div className="mb-3 bg-white p-3 border rounded">
