@@ -32,7 +32,7 @@ export default function SelectorContador({
   const abrirCalendario = () => {
     try {
       dateInputRef.current?.showPicker();
-    } catch (error) {
+    } catch {
       // Fallback si el navegador no soporta showPicker
     }
   };
@@ -40,7 +40,7 @@ export default function SelectorContador({
   const abrirReloj = () => {
     try {
       timeInputRef.current?.showPicker();
-    } catch (error) {
+    } catch {
       // Fallback si el navegador no soporta showPicker
     }
   };

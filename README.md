@@ -4,6 +4,23 @@ Herramienta interna para generar bloques de HTML estático listos para copiar y 
 
 **Stack:** React · TypeScript · Vite · Bootstrap 5
 
+## 🎫 Rama exclusiva de cupones
+
+La rama `ignaciogaldames-cupones-compartibles` muestra únicamente el generador de
+cupones y está pensada para desplegarse en un Vercel separado. La rama conserva
+la historia de `main`, por lo que los cambios futuros relacionados con cupones
+se pueden incorporar sin mezclar las demás secciones:
+
+```bash
+git switch ignaciogaldames-cupones-compartibles
+git fetch origin
+git merge origin/main
+```
+
+Después del merge, conserva el `src/App.tsx` de esta rama para que la aplicación
+siga mostrando solo cupones. Si `main` modificó archivos usados por cupones,
+prueba el build y publica nuevamente en el proyecto de Vercel compartido.
+
 ---
 
 ## 📋 Tabla de Contenidos
