@@ -1,6 +1,9 @@
 // Ruta: src/sections/cupones/scriptCopiaCupon.ts
 
-export const scriptCopiaCupon = `
+export const obtenerScriptCopiaCupon = (mensajeCompartir: string) => {
+  const mensajeCompartirSeguro = JSON.stringify(mensajeCompartir);
+
+  return `
 <script>
   /**
    * Asistente de Programación: Script Maestro de Cupones (Versión DRY)
@@ -165,6 +168,7 @@ async function handleCouponCodeCopy(button) {
  * * Esta función ya era DRY, solo lee los atributos y construye el mensaje.
  */
 function buildCouponMessage(cardElement) {
+  const encabezado = ${mensajeCompartirSeguro};
   const text = cardElement.dataset.textoCupon || '¡Nueva Oferta!';
   const code = cardElement.dataset.codigo || 'CODIGO-NODISPONIBLE';
   const expiry = cardElement.dataset.caducidad || 'Vigencia Desconocida.';
@@ -174,7 +178,7 @@ function buildCouponMessage(cardElement) {
   const productUrl = linkElement ? window.location.origin + linkElement.getAttribute('href') : window.location.origin;
 
   return \`
-¡Cupones Black en Hites.com!
+\${encabezado}
 \${text}
 ------------------------------
 Código de Cupón: \${code}
@@ -272,3 +276,4 @@ function fallbackCopyTextToClipboard(text) {
   });
 </script>
   `;
+};
