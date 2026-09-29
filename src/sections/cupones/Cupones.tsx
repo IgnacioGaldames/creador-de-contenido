@@ -29,8 +29,8 @@ export default function Cupones() {
   const [esCarrusel, setEsCarrusel] = useState(true)
   const [esContador, setEsContador] = useState(false)
   const [fechaContador, setFechaContador] = useState('2026-12-31T23:59')
-  const [tituloSeccion, setTituloSeccion] = useState('Cupones BLACK \n            <span class="articulat-heavy text-uppercase-">¡Dale un ahorro extra!</span>')
-  const [mensajeCompartir, setMensajeCompartir] = useState('¡Cupones Black en Hites.com!')
+  const [tituloSeccion, setTituloSeccion] = useState(' <span class="text-white">Cupones</span> \n            <span class="text-white articulat-heavy text-uppercase-">¡Dale un ahorro extra!</span>')
+  const [mensajeCompartir, setMensajeCompartir] = useState('¡Cupones en Hites.com!')
 
   // 🖼️ ESTADOS IMAGEN TÍTULO
   const [imagenDesktop, setImagenDesktop] = useState<File | null>(null)
