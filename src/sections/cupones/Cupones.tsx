@@ -10,6 +10,20 @@ import SelectorContador from '../../components/SelectorContador'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar'
 import cssCrudo from './estilosCupones.css?raw';
 const sufijoSeccion = 'cupones'
+const clavePrefijoImagen = 'cupones-prefijo-imagen-titulo'
+
+const obtenerRutaImagenTitulo = (prefijo: string, nombreArchivo: string) => {
+  const nombre = nombreArchivo.trim().replace(/^\/+/, '')
+  const rutaPrefijo = prefijo.trim().replace(/\\/g, '/').replace(/^\/+|\/+$/g, '')
+
+  if (!rutaPrefijo) return `images/${nombre}`
+
+  const rutaBase = /^images(?:\/|$)/i.test(rutaPrefijo)
+    ? rutaPrefijo
+    : `images/${rutaPrefijo}`
+
+  return `${rutaBase}/${nombre}`
+}
 
 const convertirFechaExcel = (numeroSerie: string) => {
   const dias = parseInt(numeroSerie, 10);
@@ -37,22 +51,27 @@ export default function Cupones() {
   const [imagenMobile, setImagenMobile] = useState<File | null>(null)
   const [rutaDesktop, setRutaDesktop] = useState('')
   const [rutaMobile, setRutaMobile] = useState('')
+  const [prefijoImagen, setPrefijoImagen] = useState(
+    () => localStorage.getItem(clavePrefijoImagen) ?? ''
+  )
 
   // 📝 ESTADO TEXTO LEGAL
   const [textoLegal, setTextoLegal] = useState('')
 
   // 🎨 ESTADO COLOR/CLASE DE FONDO
-  const [colorFondo, setColorFondo] = useState('')
+  const [colorFondo, setColorFondo] = useState('bg-cyber-azul')
   const [tipoFondo, setTipoFondo] = useState<'clase' | 'hex'>('clase')
+
+  useEffect(() => {
+    localStorage.setItem(clavePrefijoImagen, prefijoImagen)
+  }, [prefijoImagen])
 
   // 🛠️ INVOCAMOS EL HOOK
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
 
-  // 📎 Extraer nombre sin extensión para ruta CMS
+  // 📎 Usar el nombre completo para poder conservar o editar su extensión
   const extraerRutaCms = (archivo: File): string => {
-    const nombre = archivo.name
-    const sinExtension = nombre.substring(0, nombre.lastIndexOf('.')) || nombre
-    return sinExtension
+    return archivo.name
   }
 
   // 🖼️ Manejar subida de imagen desktop
@@ -112,8 +131,8 @@ export default function Cupones() {
 
     let bloqueTitulo = ''
     if (tieneImagenTitulo) {
-      const srcDesktop = `images/${rutaDesktop}.webp?$staticlink$`
-      const srcMobile = `images/${rutaMobile}.webp?$staticlink$`
+      const srcDesktop = `${obtenerRutaImagenTitulo(prefijoImagen, rutaDesktop)}?$staticlink$`
+      const srcMobile = `${obtenerRutaImagenTitulo(prefijoImagen, rutaMobile)}?$staticlink$`
       bloqueTitulo = `    <div class="container">
       <div class="row">
         <div class="col-12 d-flex align-items-center">
@@ -167,7 +186,7 @@ ${bloqueTitulo}
 </section>
 ${scriptCaducidad}${scriptContadorFinal}
 ${obtenerScriptCopiaCupon(mensajeCompartir)}`
-  }, [datosCsv, esCarrusel, esContador, fechaContador, tituloSeccion, mensajeCompartir, rutaDesktop, rutaMobile, textoLegal, colorFondo, tipoFondo])
+  }, [datosCsv, esCarrusel, esContador, fechaContador, tituloSeccion, mensajeCompartir, rutaDesktop, rutaMobile, prefijoImagen, textoLegal, colorFondo, tipoFondo])
 
   // ⚡ FUNCIÓN PUENTE (estabilizada con useCallback)
   const manejarAccion = useCallback(() => {
@@ -315,6 +334,19 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
       {/* 🖼️ Imagen de Título */}
       <div className="mb-3 bg-white p-3 border rounded">
         <label className="form-label fw-bold">🖼️ Imagen de título (opcional, reemplaza el H2):</label>
+        <div className="mb-3">
+          <label htmlFor="prefijoImagen" className="form-label small fw-semibold">
+            Prefijo de ruta de imagen:
+          </label>
+          <input
+            type="text"
+            id="prefijoImagen"
+            className="form-control form-control-sm font-monospace"
+            placeholder="images/Home/2026/08/black/cupones"
+            value={prefijoImagen}
+            onChange={(e) => setPrefijoImagen(e.target.value)}
+          />
+        </div>
         <div className="row g-2">
           <div className="col-12 col-md-6">
             <label className="form-label small fw-semibold">Desktop:</label>
@@ -328,7 +360,7 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
               <input
                 type="text"
                 className="form-control form-control-sm font-monospace mt-1"
-                placeholder="Ruta CMS (se autocompleta)"
+                placeholder="Archivo en servidor, con extensión"
                 value={rutaDesktop}
                 onChange={(e) => setRutaDesktop(e.target.value)}
               />
@@ -346,7 +378,7 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
               <input
                 type="text"
                 className="form-control form-control-sm font-monospace mt-1"
-                placeholder="Ruta CMS (se autocompleta)"
+                placeholder="Archivo en servidor, con extensión"
                 value={rutaMobile}
                 onChange={(e) => setRutaMobile(e.target.value)}
               />
