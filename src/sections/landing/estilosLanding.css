@@ -1,0 +1,17 @@
+.landing-generada .dest-doble- {
+  min-height: 100%;
+}
+
+.landing-generada .bottom-img-h {
+  min-height: 100%;
+}
+
+.landing-editor__csv-file {
+  max-width: 260px;
+}
+
+@media (max-width: 575.98px) {
+  .landing-editor__csv-file {
+    max-width: 100%;
+  }
+}
