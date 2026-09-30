@@ -1,0 +1,41 @@
+section {
+  background-color: #2323fe;
+}
+
+.card {
+  background-color: #E2E2E2;
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+
+.w-fc {
+  width: fit-content;
+}
+
+.px-10px {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.py-3px {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.fs-12px {
+  font-size: 12px;
+}
+
+.fs-md-21px {
+  font-size: 21px;
+}
+
+.lh-1 {
+  line-height: 1;
+}
+
+.d-none {
+  display: none !important;
+}

@@ -1,4 +1,4 @@
-import cssCrudo from './estilosLanding.css?raw'
+import cssCrudo from './estilosLandingHtml.css?raw'
 import { obtenerPlantillaDestacado } from './plantillaDestacado'
 import type { DestacadoLanding } from './procesarCsvLanding'
 
@@ -53,9 +53,9 @@ export const obtenerPlantillaLanding = (
             ${rutaMobile ? `<source data-size="mobile" media="(max-width: 767.98px)" srcset="${escaparAtributo(rutaMobile)}">` : ''}
             ${rutaDesktop ? `<source data-size="desktop" media="(min-width: 768px)" srcset="${escaparAtributo(rutaDesktop)}">` : ''}
             <img loading="lazy" decoding="async" src="${escaparAtributo(rutaDesktop || rutaMobile)}"
-              class="img-fluid w-100 rounded-3" alt="Imagen de cabecera" title="Imagen de cabecera"
-              data-department="Landing" data-position="1" data-size="6" data-zone="superior"
-              data-test="landing-cabecera">
+              class="img-fluid w-100 rounded-3" alt="Locura 60 segundos" title="Locura 60 segundos"
+              data-department="Locura 60 segundos" data-position="1" data-size="6" data-zone="superior"
+              data-test="logo-horizontal">
           </picture>
         </a>
       </div>
@@ -64,7 +64,7 @@ export const obtenerPlantillaLanding = (
   return `<style>
 ${cssCrudo}
 </style>
-<section class="container-fluid landing-generada" style="background-color: ${escaparAtributo(colorFondo)};">
+<section class="container-fluid {categoria_zona}" id="{categoria_zona}" style="background-color: ${escaparAtributo(colorFondo)};">
   <div class="container">
 ${cabecera}
     <div class="row" id="misDestacados">

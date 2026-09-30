@@ -14,8 +14,8 @@ export default function Landing() {
     () => localStorage.getItem(CLAVE_RUTA_BASE) ?? RUTA_BASE_PREDETERMINADA
   )
   const [colorFondo, setColorFondo] = useState('#2323fe')
-  const [imagenDesktop, setImagenDesktop] = useState('')
-  const [imagenMobile, setImagenMobile] = useState('')
+  const [imagenDesktop, setImagenDesktop] = useState('logo-horizontal.png')
+  const [imagenMobile, setImagenMobile] = useState('logo-horizontal-mob.png')
   const [errorArchivo, setErrorArchivo] = useState('')
   const { ejecutarCopia, copiado, generado, errorCopia } = useProcesarYCopiar()
 
