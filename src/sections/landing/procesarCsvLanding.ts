@@ -44,8 +44,8 @@ const ALIAS_CAMPOS: Record<CampoLanding, string[]> = {
   categoria: ['categoria', 'department', 'departamento'],
   status: ['status', 'estado'],
   posicion: ['posicion', 'position'],
-  rutaImagen: ['rutaimagen', 'imagen', 'image', 'urlimagen', 'pathimagen'],
-  imagen: ['imagenproducto', 'archivoimagen', 'imagefile', 'nombreimagen'],
+  rutaImagen: ['rutaimagen', 'carpetaimagen', 'imagepath', 'pathimagen'],
+  imagen: ['imagen', 'archivoimagen', 'imagefile', 'nombreimagen'],
   titulo: ['titulo', 'title'],
   llamado: ['llamado', 'callout', 'bajada'],
   sku1: ['sku1'],
@@ -87,6 +87,26 @@ const contarSeparadores = (linea: string, separador: string): number => {
   return cantidad
 }
 
+const prepararEntrada = (entrada: string): string => {
+  const lineas = entrada.replace(/^\uFEFF/, '').split(/\r?\n/)
+  const lineasLimpias = lineas
+    .map((linea) => linea.trim())
+    .filter((linea) => linea && linea !== '"')
+    .filter((linea) => !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?$/.test(linea))
+    .map((linea) => {
+      let contenido = linea
+      if (contenido.startsWith('|')) contenido = contenido.slice(1)
+      if (contenido.endsWith('|')) contenido = contenido.slice(0, -1)
+      return contenido
+        .trim()
+        .replace(/,\\\|\s*$/, '')
+        .replace(/\\\|/g, '%7C')
+        .replace(/\\_/g, '_')
+    })
+
+  return lineasLimpias.join('\n').replace(/^["']|["']$/g, '').trim()
+}
+
 const detectarSeparador = (texto: string): string => {
   const primeraLinea = texto.split(/\r?\n/, 1)[0] ?? ''
   const opciones = [',', '\t', ';']
@@ -99,7 +119,7 @@ const detectarSeparador = (texto: string): string => {
 }
 
 const analizarFilas = (entrada: string): string[][] => {
-  const texto = entrada.replace(/^\uFEFF/, '').trim()
+  const texto = prepararEntrada(entrada)
   if (!texto) return []
 
   const separador = detectarSeparador(texto)
@@ -127,8 +147,12 @@ const analizarFilas = (entrada: string): string[][] => {
       if (entreComillas && texto[indice + 1] === '"') {
         campo += '"'
         indice += 1
-      } else {
+      } else if (entreComillas) {
         entreComillas = !entreComillas
+      } else if (campo.trim() === '') {
+        entreComillas = true
+      } else {
+        campo += caracter
       }
       continue
     }
@@ -185,12 +209,44 @@ export const procesarCsvLanding = (entrada: string): DestacadoLanding[] => {
       const destacado = {} as DestacadoLanding
 
       CAMPOS_POR_POSICION.forEach((campo, indice) => {
+        if (campo === 'link') return
         const indiceCampo = tieneEncabezado ? indicesPorCampo.get(campo) ?? indice : indice
         destacado[campo] = fila[indiceCampo] ?? ''
       })
 
+      let indiceLink = -1
+      for (let indice = fila.length - 1; indice >= 0; indice -= 1) {
+        if (/^(?:https?:\/\/|\/)/i.test(fila[indice].trim())) {
+          indiceLink = indice
+          break
+        }
+      }
+      const linkPorPosicion = tieneEncabezado
+        ? indicesPorCampo.get('link')
+        : CAMPOS_POR_POSICION.indexOf('link')
+      destacado.link = indiceLink >= 0
+        ? fila[indiceLink]
+        : fila[linkPorPosicion ?? -1] ?? ''
       return destacado
     })
-    .filter((destacado) => destacado.categoria || destacado.rutaImagen || destacado.titulo || destacado.link)
+    .filter((destacado) =>
+      Boolean(
+        destacado.titulo ||
+        destacado.llamado ||
+        destacado.sku1 ||
+        destacado.sku2 ||
+        destacado.nombreProducto ||
+        destacado.marca ||
+        destacado.precioNormal ||
+        destacado.precioOferta ||
+        destacado.precioTh ||
+        destacado.link ||
+        (destacado.imagen && !/\/\.webp$/i.test(destacado.imagen))
+      )
+    )
     .filter((destacado) => !estaInactivo(destacado.status))
+    .map((destacado, indice) => ({
+      ...destacado,
+      posicion: destacado.posicion || String(indice + 1)
+    }))
 }

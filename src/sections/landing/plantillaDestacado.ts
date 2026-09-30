@@ -12,7 +12,13 @@ const escaparHtml = (valor: string): string =>
     return entidades[caracter] ?? caracter
   })
 
-const textoConSaltos = (valor: string): string => escaparHtml(valor).replace(/\r?\n/g, '<br>')
+const textoConSaltos = (valor: string): string =>
+  valor
+    .split(/(<br\s*\/?>|\r?\n)/i)
+    .map((parte) =>
+      /^<br\s*\/?>$/i.test(parte) || /^\r?\n$/.test(parte) ? '<br>' : escaparHtml(parte)
+    )
+    .join('')
 
 const unirRuta = (base: string, archivo: string): string => {
   const ruta = archivo.trim()
@@ -44,6 +50,10 @@ const agregarStaticlink = (ruta: string): string =>
 
 const crearPrecio = (valor: string, clase: string, textoClase: string): string => {
   if (!valor.trim()) return ''
+  const valorLimpio = valor.trim()
+  const textoPrecio = /^desde\s/i.test(valorLimpio)
+    ? valorLimpio
+    : `$${valorLimpio.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`
   const cruzado = clase === 'pcln'
   const claseContenedor = cruzado
     ? 'precio pcln d-none d-md-flex my-3px ms-1 p-0 pl-1 d-flex mw-fit align-items-center bg-none articulat-light'
@@ -52,24 +62,45 @@ const crearPrecio = (valor: string, clase: string, textoClase: string): string =
     ? 'mb-0 d-flex align-items-center text-decoration-line-through fs-11px fs-md-13px'
     : `mb-0 d-flex align-items-center fs-11px fs-md-15px ${textoClase}`
 
-  return `\n              <div class="${claseContenedor}">\n                <p class="${claseTexto}">${escaparHtml(valor)}</p>\n              </div>`
+  return `\n              <div class="${claseContenedor}">\n                <p class="${claseTexto}">${textoConSaltos(textoPrecio)}</p>\n              </div>`
 }
 
-const crearDescuento = (valor: string, llamado: string, claseExtra = ''): string => {
-  if (!valor.trim()) return ''
-  return `
-            <div class="porcentaje position-absolute d-flex flex-column m-auto right-3 articulat top-5 ${claseExtra}">
+const crearDescuentos = (llamado: string): string => {
+  const descuentos = llamado
+    .split(/<br\s*\/?>|\r?\n/i)
+    .map((linea) => {
+      const coincidencia = linea.match(/(\d+(?:[.,]\d+)?)\s*%/)
+      if (!coincidencia) return ''
+
+      const porcentaje = coincidencia[1].replace(',', '.')
+      const etiqueta = /\bTH\b/i.test(linea)
+        ? /cup[oó]n/i.test(linea) ? 'Cupón con Tarjeta Hites' : 'Con Tarjeta Hites'
+        : /\bTMP\b/i.test(linea)
+          ? 'Todo medio de pago'
+          : 'Adicional ya aplicado'
+
+      return `
               <div class="porcentajeDcto w-fc lh-sm p-3px text-white bg-red rounded-2 p-5px">
                 <div class="d-flex flex-row align-items-center justify-content-center">
                   <div class="lh-1 d-flex flex-row align-items-center">
-                    <span class="fs-29px fs-md-56px articulat-heavy lh-75"><b>${escaparHtml(valor.replace(/%/g, '').trim())}</b></span>
+                    <span class="fs-29px fs-md-56px articulat-heavy lh-75"><b>${escaparHtml(porcentaje)}</b></span>
                   </div>
                   <div class="dcto lh-1 d-flex flex-column align-items-center">
                     <div class="fs-11px fs-md-18px articulat-heavy"><b>%</b></div>
                     <div class="fs-5px fs-md-8px articulat-heavy">dcto</div>
                   </div>
-                </div>${llamado ? `\n                <p class="m-0 text-center lh-05 pt-3px fs-6px fs-md-8px articulat-heavy">${textoConSaltos(llamado)}</p>` : ''}
-              </div>
+                </div>
+                <p class="m-0 text-center lh-05 pt-3px fs-6px fs-md-8px articulat-heavy">${etiqueta}</p>
+              </div>`
+    })
+    .filter(Boolean)
+
+  if (!descuentos.length) return ''
+  return `
+            <div class="porcentaje position-absolute d-flex flex-column m-auto right-3 articulat top-5">
+              ${descuentos.map((descuento, indice) =>
+                indice === 0 ? descuento : descuento.replace('p-5px">', 'p-5px mt-1">')
+              ).join('\n')}
             </div>`
 }
 
@@ -79,44 +110,47 @@ export const obtenerPlantillaDestacado = (
 ): string => {
   const rutaImagen = agregarStaticlink(obtenerImagen(destacado, rutaBase))
   const tituloImagen = destacado.titulo || destacado.nombreProducto || destacado.categoria
+  const titulo = destacado.titulo || destacado.nombreProducto
   const atributosSku = [
     destacado.sku1 ? ` data-sku-1="${escaparHtml(destacado.sku1)}"` : '',
     destacado.sku2 ? ` data-sku-2="${escaparHtml(destacado.sku2)}"` : ''
   ].join('')
+  const imagenEsPlaceholder = /\/\.webp(?:\?[^?]*)?$/i.test(rutaImagen)
+  const srcImagen = imagenEsPlaceholder
+    ? `https://placehold.co/500x500/E2E2E2/333333?text=${encodeURIComponent(tituloImagen.replace(/<br\s*\/?>/gi, ' '))}`
+    : rutaImagen
   const imagenHtml = rutaImagen
     ? `
             <picture>
-              <source data-size="mobile" media="(max-width: 767.98px)" srcset="${escaparHtml(rutaImagen)}">
-              <source data-size="desktop" media="(min-width: 768px)" srcset="${escaparHtml(rutaImagen)}">
-              <img loading="lazy" decoding="async" src="${escaparHtml(rutaImagen)}"
+              <source type="image/webp" data-size="mobile" media="(max-width: 767.98px)" srcset="${escaparHtml(srcImagen)}">
+              <source type="image/webp" data-size="desktop" media="(min-width: 768px)" srcset="${escaparHtml(srcImagen)}">
+              <img loading="lazy" decoding="async" src="${escaparHtml(srcImagen)}"
                 class="img-fluid w-100" alt="${escaparHtml(tituloImagen)}" title="${escaparHtml(tituloImagen)}"
                 data-department="${escaparHtml(destacado.categoria)}" data-position="${escaparHtml(destacado.posicion)}"
                 data-size="3" data-zone="upper"${atributosSku}>
             </picture>`
     : ''
 
-  const tituloHtml = destacado.titulo
+  const tituloHtml = titulo
     ? `
             <div class="titulo position-absolute d-flex flex-row m-auto left-3 articulat top-5">
-              <p class="w-fc my-2px p-3px articulat-bold text-uppercase- fs-15px fs-md-23px bg-black- text-white lh-0-9">${textoConSaltos(destacado.titulo)}</p>
+              <p class="w-fc my-2px p-3px articulat-bold text-uppercase- fs-15px fs-md-23px bg-black- text-white lh-0-9">${textoConSaltos(titulo)}</p>
             </div>`
     : ''
-  const descuentoHtml = crearDescuento(destacado.dctoOferta, destacado.llamado)
-  const ribbonHtml = crearDescuento(destacado.dctoThRibbon, '', 'mt-1')
-  const llamadoHtml = !destacado.dctoOferta && destacado.llamado
-    ? `<div class="llamado position-absolute right-3 top-5"><span class="badge bg-red text-white">${textoConSaltos(destacado.llamado)}</span></div>`
-    : ''
+  const descuentoHtml = crearDescuentos(destacado.llamado)
   const detalles = [
     destacado.marca
       ? `<p class="marca w-fc my-2px px-12px py-3px articulat-bold text-uppercase fs-10px fs-md-14px bg-black text-white">${textoConSaltos(destacado.marca)}</p>`
       : '',
-    destacado.nombreProducto
+    destacado.nombreProducto && destacado.nombreProducto !== titulo
       ? `<p class="descripcion articulat-bold my-2px text-white fs-8px fs-md-14px">${textoConSaltos(destacado.nombreProducto)}</p>`
       : ''
   ].filter(Boolean).join('\n                ')
+  const precioOferta = destacado.precioOferta ||
+    (/^desde\s+\$/i.test(destacado.llamado.trim()) ? destacado.llamado.trim() : '')
   const precios = [
     crearPrecio(destacado.precioTh, 'pclth', ''),
-    crearPrecio(destacado.precioOferta, 'pclod', 'precio-oferta-black'),
+    crearPrecio(precioOferta, 'pclod', 'precio-oferta-black'),
     crearPrecio(destacado.precioNormal, 'pcln', '')
   ].filter(Boolean).join('')
   const informacionHtml = detalles || precios
@@ -124,7 +158,7 @@ export const obtenerPlantillaDestacado = (
             <div class="preciosChicosLargos w-60 w-md-50 articulat position-absolute left-0 bottom-0 lh-1 px-13px py-5px">${detalles ? `\n              <div class="textDestacado align-items-center">\n                ${detalles}\n              </div>` : ''}${precios}
             </div>`
     : ''
-  const contenido = `${tituloHtml}${descuentoHtml}${ribbonHtml}${llamadoHtml}${imagenHtml}${informacionHtml}`
+  const contenido = `${tituloHtml}${descuentoHtml}${imagenHtml}${informacionHtml}`
   const claseTarjeta = 'bottom-img-h d-flex flex-column align-items-stretch overflow-hidden text-decoration-none rounded-3 h-100 img-gradient- bg-cyber-gris'
   const interior = destacado.link
     ? `<a href="${escaparHtml(destacado.link)}" class="${claseTarjeta}">${contenido}</a>`
