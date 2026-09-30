@@ -151,9 +151,9 @@ export default function Landing() {
           />
         </div>
         <p className="small text-muted">
-          Columnas: CATEGORIA, STATUS, POSICION, RUTA IMAGEN, TITULO, LLAMADO, SKU_1, SKU_2,
-          imagen, NOMBRE_PRODUCTO, MARCA, PRECIO_NORMAL, PRECIO_OFERTA, PRECIO_TH, DCTO_OFERTA,
-          DCTO_THRIBBON, LINK. Admite filas separadas por | o saltos de línea.
+          Pega el CSV por comas, incluso si viene dentro de una tabla Markdown. Columnas: CATEGORIA,
+          STATUS, POSICION, RUTA IMAGEN, TITULO, LLAMADO, SKU_1, SKU_2, imagen, NOMBRE_PRODUCTO,
+          MARCA, PRECIO_NORMAL, PRECIO_OFERTA, PRECIO_TH, DCTO_OFERTA, DCTO_THRIBBON y LINK.
         </p>
         <textarea
           id="landing-csv"
