@@ -99,18 +99,18 @@ export default function Cupones() {
       const estado = columnas[0]?.trim() || ''
       if (estado.toUpperCase() !== 'ACTIVO') return ''
 
-      const departamento = columnas[1]?.trim() || ''
-      const imagen = columnas[2]?.trim() || ''
-      const titulo = columnas[3]?.trim() || ''
-      const llamado = columnas[4]?.trim() || ''
-      const cupon = columnas[5]?.trim() || ''
-      const legal = columnas[6]?.trim() || ''
-      //const fechaInicio = convertirFechaExcel(columnas[7]?.trim()) || ''
-      const fechaTermino = convertirFechaExcel(columnas[8]?.trim()) || ''
-      const idCatalogo = columnas[9]?.trim() || ''
-      const link = columnas[10]?.trim() || ''
+      const posicion   = columnas[1]?.trim() || ''
+      const imagen     = columnas[2]?.trim() || ''
+      const titulo     = imagen.split('/').pop()?.trim() || ''
+      const llamado    = columnas[3]?.trim() || ''
+      const cupon      = columnas[4]?.trim() || ''
+      const legal      = columnas[5]?.trim() || ''
+      // columnas[6] = FECHA_INICIO (no se usa visualmente)
+      const fechaTermino = convertirFechaExcel(columnas[7]?.trim() ?? '') || ''
+      const idCatalogo = columnas[8]?.trim() || ''
+      const link       = columnas[9]?.trim() || ''
 
-      return obtenerPlantillaCupon(esCarrusel, index, departamento, imagen, titulo, llamado, cupon, legal, fechaTermino, idCatalogo, link)
+      return obtenerPlantillaCupon(esCarrusel, index, posicion, imagen, titulo, llamado, cupon, legal, fechaTermino, idCatalogo, link)
     }).filter(html => html !== '').join('')
 
     const contenidoInterno = esCarrusel
@@ -213,9 +213,8 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
             <thead className="table-dark">
               <tr>
                 <th>ESTADO</th>
-                <th>DEPARTAMENTO</th>
-                <th>IMAGEN</th>
-                <th>TITULO_PRINCIPAL</th>
+                <th>POSICION</th>
+                <th>RUTA_IMAGEN / TITULO</th>
                 <th>LLAMADO_CUPON</th>
                 <th>CUPON</th>
                 <th>LEGAL</th>
@@ -223,24 +222,24 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
                 <th>FECHA_TERMINO</th>
                 <th>ID_CATALOGO</th>
                 <th>LINK</th>
-                <th>CSV</th>
+                <th>IMAGEN</th>
+                <th>CSV concatenado</th>
               </tr>
             </thead>
             <tbody className="font-monospace">
               <tr>
                 <td>ACTIVO</td>
-                <td>dormitorio</td>
-                <td>2026/black/cupones/logo-cupon-gen</td>
-                <td>Ropa de cama</td>
+                <td>CUPON-01</td>
+                <td>2026/08/black/cupones/Ropa de cama</td>
                 <td>10% dcto adicional</td>
                 <td>RCH10</td>
-                <td>Pagando con Tarjeta Hites<br />*Excluye productos Marketplace</td>
+                <td>*Excluye Marketplace</td>
                 <td>46104</td>
                 <td>46595</td>
                 <td>ropadecama</td>
                 <td>/dormitorio/ropa-de-cama/</td>
-                <td>"ACTIVO,2026/black/cupones/logo-cupon-gen,Ropa de cama,10% dcto adicional,RCH10,Pagando con Tarjeta Hites
-                  *Excluye productos Marketplace,46104,46595,ropadecama,/dormitorio/ropa-de-cama/|"</td>
+                <td>(vacío)</td>
+                <td><code>ACTIVO,CUPON-01,2026/08/black/cupones/Ropa de cama,10% dcto adicional,RCH10,*Excluye Marketplace,46104,46595,ropadecama,/dormitorio/ropa-de-cama/,|</code></td>
               </tr>
             </tbody>
           </table>

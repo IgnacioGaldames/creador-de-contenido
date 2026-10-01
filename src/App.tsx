@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Cabeceras from './sections/cabeceras/Cabeceras'
 import Cupones from './sections/cupones/Cupones'
+import CuponesCyber from './sections/cuponesCyber/CuponesCyber'
 import Inpage from './sections/inpage/Inpage'
 import PuntosRetiro from './sections/puntosRetiro/PuntosRetiro'
 import ProcesadorImagenes from './sections/procesadorImagenes/ProcesadorImagenes'
@@ -10,6 +11,7 @@ import Landing from './sections/landing/Landing'
 const SECCIONES_DISPONIBLES = [
   { id: 'cabeceras', nombre: '🏷️ Cabeceras HTML' },
   { id: 'cupones', nombre: '🎫 Cupones HTML' },
+  { id: 'cuponesCyber', nombre: '🛒 Cuponera Cyber HTML' },
   { id: 'inpage', nombre: '📄 Inpage HTML' },
   { id: 'landing', nombre: '🛍️ Creador de landings' },
   { id: 'puntos', nombre: '📍 Puntos de Retiro' },
@@ -42,17 +44,19 @@ function App() {
         {/* Área de Trabajo Semántica */}
         <main className="col-md-9 p-5 bg-light" style={{ overflowY: 'auto' }}>
           <h1 className="display-5 mb-2">
-            {seccionActiva === 'cabeceras' ? '  Cabeceras HTML' :
-              seccionActiva === 'cupones' ? '  Cupones HTML' :
-            seccionActiva === 'inpage' ? '📄 Inpage HTML' :
-              seccionActiva === 'landing' ? '🛍️ Creador de landings' :
-              seccionActiva === 'puntos' ? '📍 Puntos de Retiro' : '🖼️ Procesar imágenes'}
+            {seccionActiva === 'cabeceras' ? '🏷️ Cabeceras HTML' :
+             seccionActiva === 'cupones' ? '🎫 Cupones HTML' :
+             seccionActiva === 'cuponesCyber' ? '🛒 Cuponera Cyber HTML' :
+             seccionActiva === 'inpage' ? '📄 Inpage HTML' :
+             seccionActiva === 'landing' ? '🛍️ Creador de landings' :
+             seccionActiva === 'puntos' ? '📍 Puntos de Retiro' : '🖼️ Procesar imágenes'}
           </h1>
           <p className="text-muted mb-4">Herramienta de automatización modular.</p>
 
           {/* Renderizado Condicional */}
           {seccionActiva === 'cabeceras' && <Cabeceras />}
           {seccionActiva === 'cupones' && <Cupones />}
+          {seccionActiva === 'cuponesCyber' && <CuponesCyber />}
           {seccionActiva === 'inpage' && <Inpage />}
           {seccionActiva === 'landing' && <Landing />}
           {seccionActiva === 'puntos' && <PuntosRetiro />}
