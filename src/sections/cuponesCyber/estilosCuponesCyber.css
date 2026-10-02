@@ -99,33 +99,42 @@
 }
 
 @keyframes cuponeraFlota {
+
   0%,
   100% {
     transform: translateY(0) rotate(0deg) scale(1);
     filter: drop-shadow(0 0 0 rgba(255, 95, 0, 0));
   }
+
   20% {
     transform: translateY(-10px) rotate(-4deg) scale(1.03);
   }
+
   40% {
     transform: translateY(-4px) rotate(3deg) scale(1.06);
     filter: drop-shadow(0 0 22px rgba(255, 95, 0, .7));
   }
+
   60% {
     transform: translateY(-12px) rotate(-2deg) scale(1.03);
   }
+
   80% {
     transform: translateY(0) rotate(0deg) scale(1);
   }
+
   84% {
     transform: rotate(-7deg) scale(1.05);
   }
+
   88% {
     transform: rotate(6deg) scale(1.05);
   }
+
   92% {
     transform: rotate(-4deg) scale(1.02);
   }
+
   96% {
     transform: rotate(2deg);
   }
@@ -136,6 +145,7 @@
   .banner-cuponera__texto {
     font-size: 1.1rem;
   }
+
   .banner-cuponera__btn {
     padding: .8em 1.6em;
   }
@@ -146,6 +156,7 @@
   .banner-cuponera {
     margin-bottom: 1.5rem;
   }
+
   .banner-cuponera__inner {
     flex-direction: column;
     align-items: flex-start;
@@ -154,17 +165,21 @@
     min-height: 0;
     padding: .5rem 0 .5rem .25rem;
   }
+
   .banner-cuponera__logo {
     width: 42%;
     max-width: 190px;
   }
+
   .banner-cuponera__texto {
     font-size: clamp(1.05rem, 5vw, 1.6rem);
   }
+
   .banner-cuponera__btn {
     padding: .8em 2.2em;
     font-size: clamp(.9rem, 3.6vw, 1.05rem);
   }
+
   .banner-cuponera__icono {
     position: absolute;
     top: 50%;
@@ -179,7 +194,147 @@
   .banner-cuponera__icono {
     animation: none;
   }
+
   .banner-cuponera__btn {
     transition: none;
+  }
+}
+
+/* Estilos CSS Mínimos para el Feedback Visual de la copia exitosa */
+.btn-copied {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+  cursor: default;
+  transition: background-color 0.3s ease;
+}
+
+.coupon-code {
+  user-select: all;
+}
+
+.btn-primary {
+  background-color: #023080 !important;
+}
+
+.text-blue {
+  color: #023080 !important;
+}
+
+.bg-dark-blue {
+  background-color: #0e193a !important;
+}
+
+/* .cupon .card-body {
+    padding: 0 !important;
+  } */
+
+.cupon .card-title,
+.cupon .card-text {
+  padding: 0.5rem 1.25rem;
+}
+
+.cupon .input-group-text {
+  border-radius: 50rem 0 0 50rem;
+  background-color: white;
+}
+
+.cupon .form-control {
+  border-radius: 0 50rem 50rem 0;
+  background-color: white;
+}
+
+.codigo {
+  /* padding: 1.25rem;
+    border-style: dashed;
+    border-width: 1px;
+    border-color: #bfbfbf; */
+
+}
+
+.codigo,
+.codigo input {
+  cursor: pointer;
+}
+
+.bg-gradient-red {
+  background: #FF1849;
+  background: linear-gradient(90deg, #FF1849 0%, #ff13b0 100%);
+}
+
+hr {
+  border: 1px dashed #ccc;
+  ;
+}
+
+.logo {
+  max-width: 300px;
+  margin-bottom: 1rem;
+}
+
+.titulo {
+  /* max-width: 400px; */
+  margin-bottom: 1rem;
+}
+
+.sello-cyber {
+  max-width: 50px;
+  margin-bottom: 1rem;
+}
+
+.logo-cupon {
+  max-width: 100px;
+  /* display: none; */
+}
+
+.card-title {
+  font-size: 1rem;
+}
+
+.cupon-recorte {
+  /* Variable para controlar el tamaño del mordisco fácilmente */
+  --radio-agujero: 10px;
+
+  /* --- LÓGICA DE MÁSCARA --- */
+
+  /* Definimos dos gradientes: uno para la izquierda y otro para la derecha.
+     La parte 'transparent' es el agujero, la parte 'black' es lo visible. */
+  -webkit-mask-image:
+    radial-gradient(circle at left center, transparent var(--radio-agujero), black calc(var(--radio-agujero) + 0.5px)),
+    radial-gradient(circle at right center, transparent var(--radio-agujero), black calc(var(--radio-agujero) + 0.5px));
+
+  mask-image:
+    radial-gradient(circle at left center, transparent var(--radio-agujero), black calc(var(--radio-agujero) + 0.5px)),
+    radial-gradient(circle at right center, transparent var(--radio-agujero), black calc(var(--radio-agujero) + 0.5px));
+
+  /* --- POSICIONAMIENTO CLAVE --- */
+
+  /* Posicionamos una máscara a la izquierda y la otra a la derecha */
+  -webkit-mask-position: left, right;
+  mask-position: left, right;
+
+  /* Hacemos que cada máscara ocupe un poco más de la mitad (51%) para que se toquen en el centro sin huecos */
+  -webkit-mask-size: 51% 100%;
+  mask-size: 51% 100%;
+
+  /* Evitamos que se repitan */
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+
+@media (min-width: 768px) {
+  .logo {
+    max-width: 300px;
+    margin-bottom: 1rem;
+  }
+
+  .titulo {
+    /* max-width: 400px; */
+    margin-bottom: 1rem;
+  }
+
+  .sello-cyber {
+    max-width: 50px;
+    margin-bottom: 1rem;
   }
 }

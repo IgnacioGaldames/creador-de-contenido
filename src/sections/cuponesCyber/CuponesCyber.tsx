@@ -21,7 +21,7 @@ export default function CuponesCyber() {
   const [tipoFondo, setTipoFondo] = useState<'clase' | 'hex'>('clase')
 
   // 🖼️ BANNER — configuración del bloque título tipo cuponera cyber
-  const [linkBanner, setLinkBanner] = useState('/cuponera-cyberday-2026.html')
+  const [linkBanner, setLinkBanner] = useState('/cuponera-cyberday.html')
   const [srcLogoBanner, setSrcLogoBanner] = useState('images/Home/2026/10/cyber/cuponera-cyber.png')
   const [textoBanner, setTextoBanner] = useState('¡Activa tus cupones y')
   const [spanTextoBanner, setSpanTextoBanner] = useState('ahorra mucho más!')
@@ -208,7 +208,7 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
           <div className="col-12 col-md-6">
             <label className="form-label small fw-semibold">Link del banner:</label>
             <input type="text" className="form-control form-control-sm font-monospace"
-              placeholder="/cuponera-cyberday-2026.html"
+              placeholder="/cuponera-cyberday.html"
               value={linkBanner} onChange={(e) => setLinkBanner(e.target.value)} />
           </div>
           <div className="col-12 col-md-6">
