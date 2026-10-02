@@ -100,15 +100,16 @@ export default function Cupones() {
       if (estado.toUpperCase() !== 'ACTIVO') return ''
 
       const posicion   = columnas[1]?.trim() || ''
-      const imagen     = columnas[2]?.trim() || ''
-      const titulo     = imagen.split('/').pop()?.trim() || ''
-      const llamado    = columnas[3]?.trim() || ''
-      const cupon      = columnas[4]?.trim() || ''
-      const legal      = columnas[5]?.trim() || ''
-      // columnas[6] = FECHA_INICIO (no se usa visualmente)
-      const fechaTermino = convertirFechaExcel(columnas[7]?.trim() ?? '') || ''
-      const idCatalogo = columnas[8]?.trim() || ''
-      const link       = columnas[9]?.trim() || ''
+      // columnas[2] = DEPARTAMENTO (no se usa)
+      const imagen     = columnas[3]?.trim() || ''
+      const titulo     = columnas[4]?.trim() || ''
+      const llamado    = columnas[5]?.trim() || ''
+      const cupon      = columnas[6]?.trim() || ''
+      const legal      = columnas[7]?.trim() || ''
+      // columnas[8] = FECHA_INICIO
+      const fechaTermino = convertirFechaExcel(columnas[9]?.trim() ?? '') || ''
+      const idCatalogo = columnas[10]?.trim() || ''
+      const link       = columnas[11]?.trim() || ''
 
       return obtenerPlantillaCupon(esCarrusel, index, posicion, imagen, titulo, llamado, cupon, legal, fechaTermino, idCatalogo, link)
     }).filter(html => html !== '').join('')
@@ -214,7 +215,9 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
               <tr>
                 <th>ESTADO</th>
                 <th>POSICION</th>
-                <th>RUTA_IMAGEN / TITULO</th>
+                <th>DEPARTAMENTO</th>
+                <th>IMAGEN</th>
+                <th>TITULO</th>
                 <th>LLAMADO_CUPON</th>
                 <th>CUPON</th>
                 <th>LEGAL</th>
@@ -222,7 +225,7 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
                 <th>FECHA_TERMINO</th>
                 <th>ID_CATALOGO</th>
                 <th>LINK</th>
-                <th>IMAGEN</th>
+                <th>IMAGEN_REP</th>
                 <th>CSV concatenado</th>
               </tr>
             </thead>
@@ -230,16 +233,18 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
               <tr>
                 <td>ACTIVO</td>
                 <td>CUPON-01</td>
-                <td>2026/08/black/cupones/Ropa de cama</td>
+                <td>MALETERIA</td>
+                <td>maletas.png</td>
+                <td>MALETAS</td>
                 <td>10% dcto adicional</td>
-                <td>RCH10</td>
-                <td>*Excluye Marketplace</td>
-                <td>46104</td>
-                <td>46595</td>
-                <td>ropadecama</td>
-                <td>/dormitorio/ropa-de-cama/</td>
-                <td>(vacío)</td>
-                <td><code>ACTIVO,CUPON-01,2026/08/black/cupones/Ropa de cama,10% dcto adicional,RCH10,*Excluye Marketplace,46104,46595,ropadecama,/dormitorio/ropa-de-cama/,|</code></td>
+                <td>MALETAS_10</td>
+                <td>*Excluye marketplace</td>
+                <td>46295</td>
+                <td>46302</td>
+                <td>maletas</td>
+                <td>https://www.hites.com/hogar/maleteria/maletas/</td>
+                <td>maletas.png</td>
+                <td><code>ACTIVO,CUPON-01,MALETERIA,maletas.png,MALETAS,10% dcto adicional,MALETAS_10,*Excluye marketplace,46295,46302,maletas,https://www.hites.com/hogar/maleteria/maletas/,maletas.png|</code></td>
               </tr>
             </tbody>
           </table>
@@ -442,7 +447,7 @@ ${obtenerScriptCopiaCupon(mensajeCompartir)}`
         <textarea
           className="form-control font-monospace"
           rows={5}
-          placeholder="ACTIVO,2026/black/cupones/logo...,Ropa de cama..."
+          placeholder="ACTIVO,CUPON-01,MALETERIA,maletas.png,MALETAS,10% dcto adicional,MALETAS_10,*Excluye marketplace,46295,46302,maletas,https://www.hites.com/hogar/maleteria/maletas/,maletas.png|"
           value={datosCsv}
           onChange={(e) => setDatosCsv(e.target.value)}
         />
