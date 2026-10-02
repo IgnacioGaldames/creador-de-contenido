@@ -30,9 +30,9 @@ export const obtenerPlantillaCuponCyber = (
     data-legal="${legal}">
     <div class="card-body bg-gradient-red d-flex align-items-center m-3 py-0 px-1 rounded-3 cupon-recorte">
       <picture>
-        <source data-size="mobile" media="(max-width: 767.98px)" srcset="/images/Home/${imagen}?$staticlink$">
-        <source data-size="desktop" media="(min-width: 768px)" srcset="/images/Home/${imagen}?$staticlink$">
-        <img loading="lazy" decoding="async" src="/images/Home/${imagen}?$staticlink$"
+        <source data-size="mobile" media="(max-width: 767.98px)" srcset="/images/Landing/cupones/${imagen}?$staticlink$">
+        <source data-size="desktop" media="(min-width: 768px)" srcset="/images/Landing/cupones/${imagen}?$staticlink$">
+        <img loading="lazy" decoding="async" src="/images/Landing/cupones/${imagen}?$staticlink$"
           class="logo-cupon img-fluid w-100 rounded-3 py-3 pl-1" alt="${cupon} ${llamado} ${titulo}"
           title="${cupon} ${llamado} ${titulo}" data-department="${titulo}" data-position="${posicionFinal}"
           data-size="4" data-zone="cuponera" data-test="${idCatalogo}">
