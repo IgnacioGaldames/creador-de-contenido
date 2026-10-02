@@ -203,17 +203,7 @@ function handleWhatsAppShare(message) {
 async function handleNativeShareOrCopy(button, message) {
   const textElement = button.querySelector('.btn-text');
 
-  // 1. Prioridad: API de Compartir Nativa
-  if (navigator.share) {
-    try {
-      await navigator.share({ text: message, title: '¡Mira este Cupón!' });
-      return;
-    } catch (error) {
-      console.warn('Fallo la API Nativa. Intentando copia al portapapeles.', error);
-    }
-  }
-
-  // 2. Fallback: Copiar al Portapapeles (API moderna)
+// 1. Copiar al Portapapeles (API moderna)
   if (navigator.clipboard && window.isSecureContext) {
     try {
       await navigator.clipboard.writeText(message);
@@ -239,7 +229,7 @@ async function handleNativeShareOrCopy(button, message) {
 function showCopyFeedback(button, textElement, originalClass) {
   const originalText = textElement.getAttribute('data-original-text') || 'copiar mensaje';
 
-  textElement.textContent = 'código copiado';
+  textElement.textContent = originalText.includes('mensaje') ? 'mensaje copiado' : 'código copiado';
   button.classList.add('btn-success', 'btn-copied');
   button.classList.remove(originalClass);
   button.disabled = true;

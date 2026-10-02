@@ -21,7 +21,7 @@ export default function CuponesCyber() {
   const [tipoFondo, setTipoFondo] = useState<'clase' | 'hex'>('clase')
 
   // 🖼️ BANNER — configuración del bloque título tipo cuponera cyber
-  const [linkBanner, setLinkBanner] = useState('/cuponera-cyberday.html')
+  const [linkBanner, setLinkBanner] = useState('/cuponera-cyber.html')
   const [srcLogoBanner, setSrcLogoBanner] = useState('images/Home/2026/10/cyber/cuponera-cyber.png')
   const [textoBanner, setTextoBanner] = useState('¡Activa tus cupones y')
   const [spanTextoBanner, setSpanTextoBanner] = useState('ahorra mucho más!')
@@ -49,17 +49,17 @@ export default function CuponesCyber() {
       const estado = columnas[0]?.trim() || ''
       if (estado.toUpperCase() !== 'ACTIVO') return ''
 
-      const posicion   = columnas[1]?.trim() || ''
+      const posicion = columnas[1]?.trim() || ''
       // columnas[2] = DEPARTAMENTO (no se usa)
-      const imagen     = columnas[3]?.trim() || ''
-      const titulo     = columnas[4]?.trim() || ''
-      const llamado    = columnas[5]?.trim() || ''
-      const cupon      = columnas[6]?.trim() || ''
-      const legal      = columnas[7]?.trim() || ''
+      const imagen = columnas[3]?.trim() || ''
+      const titulo = columnas[4]?.trim() || ''
+      const llamado = columnas[5]?.trim() || ''
+      const cupon = columnas[6]?.trim() || ''
+      const legal = columnas[7]?.trim() || ''
       // columnas[8] = FECHA_INICIO (no usada visualmente)
       const fechaTermino = convertirFechaExcel(columnas[9]?.trim() ?? '') || ''
       const idCatalogo = columnas[10]?.trim() || ''
-      const link       = columnas[11]?.trim() || ''
+      const link = columnas[11]?.trim() || ''
 
       return obtenerPlantillaCuponCyber(esCarrusel, index, posicion, imagen, titulo, llamado, cupon, legal, fechaTermino, idCatalogo, link)
     }).filter(html => html !== '').join('')
@@ -83,7 +83,7 @@ export default function CuponesCyber() {
 ${scriptCaducidad}
 ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
   }, [datosCsv, esCarrusel, mensajeCompartir, textoLegal, colorFondo, tipoFondo,
-      linkBanner, srcLogoBanner, textoBanner, spanTextoBanner, srcIconoBanner, textoCta])
+    linkBanner, srcLogoBanner, textoBanner, spanTextoBanner, srcIconoBanner, textoCta])
 
   const manejarAccion = useCallback(() => {
     if (htmlGenerado) ejecutarCopia(htmlGenerado)
@@ -208,7 +208,7 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
           <div className="col-12 col-md-6">
             <label className="form-label small fw-semibold">Link del banner:</label>
             <input type="text" className="form-control form-control-sm font-monospace"
-              placeholder="/cuponera-cyberday.html"
+              placeholder="/cuponera-cyber.html"
               value={linkBanner} onChange={(e) => setLinkBanner(e.target.value)} />
           </div>
           <div className="col-12 col-md-6">
@@ -283,7 +283,7 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
           type="text"
           id="prefijoImagenCyber"
           className="form-control font-monospace"
-          placeholder="images/Home/2026/10/cyber/cupones"
+          placeholder="images/Home/cuponera/"
           value={prefijoImagen}
           onChange={(e) => setPrefijoImagen(e.target.value)}
         />

@@ -156,15 +156,6 @@ Ver productos: \${productUrl}
     async function handleNativeShareOrCopy(button, message) {
       const textElement = button.querySelector('.btn-text');
 
-      if (navigator.share) {
-        try {
-          await navigator.share({ text: message, title: '¡Mira este Cupón Cyber!' });
-          return;
-        } catch (error) {
-          console.warn('Fallo la API Nativa. Intentando copia al portapapeles.', error);
-        }
-      }
-
       if (navigator.clipboard && window.isSecureContext) {
         try {
           await navigator.clipboard.writeText(message);
@@ -185,7 +176,7 @@ Ver productos: \${productUrl}
 
     function showCopyFeedback(button, textElement, originalClass) {
       const originalText = textElement.getAttribute('data-original-text') || 'copiar mensaje';
-      textElement.textContent = 'código copiado';
+      textElement.textContent = originalText.includes('mensaje') ? 'mensaje copiado' : 'código copiado';
       button.classList.add('btn-success', 'btn-copied');
       button.classList.remove(originalClass);
       button.disabled = true;

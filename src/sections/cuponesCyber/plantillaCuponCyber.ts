@@ -28,7 +28,7 @@ export const obtenerPlantillaCuponCyber = (
   const contenidoCupon = `<div class="card shadow h-100 border rounded-3 cupon overflow-hidden"
     data-texto-cupon="${llamado} ${titulo}" data-codigo="${cupon}" data-caducidad="${fechaTermino}"
     data-legal="${legal}">
-    <div class="card-body bg-gradient-red d-flex align-items-center m-3 py-0 px-1 rounded-3 cupon-recorte">
+    <div class="card-body bg-naranjo d-flex align-items-center m-3 py-0 px-1 rounded-3 cupon-recorte">
       <picture>
         <source data-size="mobile" media="(max-width: 767.98px)" srcset="/images/Landing/cupones/${imagen}?$staticlink$">
         <source data-size="desktop" media="(min-width: 768px)" srcset="/images/Landing/cupones/${imagen}?$staticlink$">
@@ -41,11 +41,11 @@ export const obtenerPlantillaCuponCyber = (
     </div>
     <div class="card-body mx-0 mx-md-1 px-2">
       <div class="input-group codigo mb-2 button-gtm-cupones">
-        <span class="input-group-text gotham-book">
+        <span class="input-group-text gotham-book fs-14px">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy mr-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" /></svg>
           Código:
         </span>
-        <input type="text" class="form-control gotham-bold text-center coupon-code" value="${cupon}" readonly>
+        <input type="text" class="form-control gotham-bold text-center coupon-code fs-14px" value="${cupon}" readonly>
       </div>
       <div class="text-muted border-top-0 gotham text-center">
         <p class="m-0 data-vigencia-legal"> </p>
