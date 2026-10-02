@@ -283,7 +283,7 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
           type="text"
           id="prefijoImagenCyber"
           className="form-control font-monospace"
-          placeholder="images/Home/cuponera/"
+          placeholder="images/Landing/cupones//"
           value={prefijoImagen}
           onChange={(e) => setPrefijoImagen(e.target.value)}
         />
