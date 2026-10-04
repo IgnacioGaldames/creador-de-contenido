@@ -13,6 +13,7 @@ export default function CuponesCyber() {
   // 🧠 ESTADOS BÁSICOS
   const [datosCsv, setDatosCsv] = useState('')
   const [esCarrusel, setEsCarrusel] = useState(true)
+  const [noIndex, setNoIndex] = useState(false)
   const [mensajeCompartir, setMensajeCompartir] = useState('¡Cupones CYBER en Hites.com!')
   const [textoLegal, setTextoLegal] = useState('')
 
@@ -79,10 +80,10 @@ export default function CuponesCyber() {
 
     const bannerConfig = { linkBanner, srcLogoBanner, textoBanner, spanTextoBanner, srcIconoBanner, textoCta }
 
-    return `${obtenerHtmlCuponesCyber(esCarrusel, bloquesHTML, bannerConfig, textoLegal, claseFondo, styleFondo)}
+    return `${obtenerHtmlCuponesCyber(esCarrusel, bloquesHTML, bannerConfig, textoLegal, claseFondo, styleFondo, noIndex)}
 ${scriptCaducidad}
 ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
-  }, [datosCsv, esCarrusel, mensajeCompartir, textoLegal, colorFondo, tipoFondo,
+  }, [datosCsv, esCarrusel, noIndex, mensajeCompartir, textoLegal, colorFondo, tipoFondo,
     linkBanner, srcLogoBanner, textoBanner, spanTextoBanner, srcIconoBanner, textoCta])
 
   const manejarAccion = useCallback(() => {
@@ -144,9 +145,9 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
       </div>
 
       {/* ⚙️ Estructura visual */}
-      <div className="mb-3 d-flex align-items-center bg-white p-3 border rounded">
-        <span className="me-3 fw-bold">Estructura visual:</span>
-        <div className="form-check form-switch me-4 mb-0">
+      <div className="mb-3 d-flex align-items-center flex-wrap gap-4 bg-white p-3 border rounded">
+        <span className="fw-bold">Estructura visual:</span>
+        <div className="form-check form-switch mb-0">
           <input
             className="form-check-input cursor-pointer"
             type="checkbox"
@@ -156,6 +157,18 @@ ${obtenerScriptCopiaCuponCyber(mensajeCompartir)}`
           />
           <label className="form-check-label cursor-pointer" htmlFor="toggleCarruselCyber">
             {esCarrusel ? '🎡 Carrusel (Slider)' : '🔲 Grilla (Bloques)'}
+          </label>
+        </div>
+        <div className="form-check form-switch mb-0">
+          <input
+            className="form-check-input cursor-pointer"
+            type="checkbox"
+            id="toggleNoIndexCyber"
+            checked={noIndex}
+            onChange={() => setNoIndex(!noIndex)}
+          />
+          <label className="form-check-label cursor-pointer" htmlFor="toggleNoIndexCyber">
+            🤖 {noIndex ? 'noindex activado' : 'noindex desactivado'}
           </label>
         </div>
       </div>

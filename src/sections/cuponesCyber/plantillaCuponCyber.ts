@@ -100,7 +100,8 @@ export const obtenerHtmlCuponesCyber = (
   banner: BannerCuponeraConfig,
   textoLegal: string,
   claseFondo: string,
-  styleFondo: string
+  styleFondo: string,
+  noIndex: boolean = false
 ) => {
   const contenidoInterno = esCarrusel
     ? `<div class="slider-cyber carrusel-active" data-slick-desktop="4" data-slick-tablet="4" data-slick-mobile="1">\n<!-- inicio cupones -->\n${bloquesHTML}\n<!-- fin cupones -->\n</div>`
@@ -110,7 +111,9 @@ export const obtenerHtmlCuponesCyber = (
     ? `\n    <div class="container">\n      <div class="row">\n        <div class="col-12">\n          <p class="small text-center text-white">${textoLegal.trim()}</p>\n        </div>\n      </div>\n    </div>`
     : '';
 
-  return `<style>
+  const metaNoIndex = noIndex ? '<meta name="robots" content="noindex, follow">\n' : '';
+
+  return `${metaNoIndex}<style>
 ${cssCrudo}
 </style><section class="container-fluid gotham py-5${claseFondo}" id="cupones"${styleFondo}>
   <div class="container">
