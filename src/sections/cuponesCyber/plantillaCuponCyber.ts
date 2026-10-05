@@ -58,7 +58,7 @@ export const obtenerPlantillaCuponCyber = (
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy mr-1" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z" /></svg>
             <span class="gotham-book" data-original-text="copiar código">copiar código</span>
           </button>
-          ${link ? `<a href="${link}?icn=cuponera&ici=cupon-cyber-${idCatalogo}" target="_blank" class="button-gtm-cupones btn btn-sm btn-light rounded-pill border border-gray flex-grow-1 ml-1 ml-md-2 px-md-2 fs-7" data-action="view-products" data-evento="Ver Productos">
+          ${link ? `<a href="${link}" target="_blank" class="button-gtm-cupones btn btn-sm btn-light rounded-pill border border-gray flex-grow-1 ml-1 ml-md-2 px-md-2 fs-7" data-action="view-products" data-evento="Ver Productos">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag mr-1" viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" /></svg>
             <span class="gotham-book">ver productos</span>
           </a>` : ''}
