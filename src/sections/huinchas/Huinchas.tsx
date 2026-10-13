@@ -74,8 +74,6 @@ export default function Huinchas() {
         const link             = columnas[20]?.trim() || '#'
         const legal            = columnas[21]?.trim() || ''
 
-        if (!rutaImagen) return ''
-
         return obtenerHtmlHuincha(
           rutaImagen,
           kvGrafica,
