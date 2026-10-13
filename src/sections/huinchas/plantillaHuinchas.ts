@@ -13,12 +13,21 @@ export const obtenerHtmlHuincha = (
   llamadoHtml: string,
   areaDepartamento: string,
   link: string,
-  tieneMobile: boolean
+  tieneMobile: boolean,
+  legal = ''
 ): string => {
   const srcsetMobile = tieneMobile
     ? `${rutaImagen}-mob.webp`
     : `${rutaImagen}.webp`;
   const categoriaFormateada = sentenceCase(categoriaHtml);
+  const legalHtml = legal.trim()
+    ? `<span class="d-flex justify-content-center text-center fs-10px fs-md-11px mt-0 mt-md-n2">${legal
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')}</span>`
+    : '';
 
   return `<!--hero-${kvGrafica.toLowerCase().replace(/\s+/g, '-')}-->
 <div class="clp-hero-banner">
@@ -34,6 +43,7 @@ export const obtenerHtmlHuincha = (
         data-department="${areaDepartamento}" data-position="1" data-size="12" data-zone="hero">
     </picture>
   </a>
+  ${legalHtml}
 </div>`;
 };
 

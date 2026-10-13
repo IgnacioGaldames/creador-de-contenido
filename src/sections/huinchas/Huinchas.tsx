@@ -54,12 +54,16 @@ export default function Huinchas() {
   // 8: MARCA, 9: NOMBRE PRODUCTO, 10: ATRIBUTOS, 11: PRECIO NORMAL,
   // 12: PRECIO OFERTA, 13: PRECIO TH, 14: PRECIO CUPÓN, 15: CUOTA/CTC,
   // 16: DCTO OFERTA, 17: DCTO TH, 18: RIBBON, 19: ID CATALOGO,
-  // 20: LINK
+  // 20: LINK, 21: LEGAL (opcional)
 
   const htmlGenerado = useMemo(() => {
     if (!datosExcel.trim()) return ''
 
-    const bloques = obtenerRegistros(datosExcel)
+    const registros = obtenerRegistros(datosExcel)
+    const primeraColumna = registros[0]?.[0]?.replace(/^\uFEFF/, '').trim().toLocaleUpperCase('es')
+    const filas = primeraColumna === 'TAMAÑO' ? registros.slice(1) : registros
+
+    const bloques = filas
       .map(columnas => {
         const rutaImagen       = columnas[3]?.trim() || ''
         const kvGrafica        = columnas[1]?.trim() || ''
@@ -68,6 +72,7 @@ export default function Huinchas() {
         const llamadoHtml      = columnas[5]?.trim() || ''
         const tieneMobile      = columnas[6]?.trim().toUpperCase() === 'SI'
         const link             = columnas[20]?.trim() || '#'
+        const legal            = columnas[21]?.trim() || ''
 
         if (!rutaImagen) return ''
 
@@ -78,7 +83,8 @@ export default function Huinchas() {
           llamadoHtml,
           areaDepartamento,
           link,
-          tieneMobile
+          tieneMobile,
+          legal
         )
       })
       .filter(b => b !== '')
@@ -103,7 +109,7 @@ export default function Huinchas() {
 
       {/* Referencia de estructura CSV */}
       <div className="mb-3 bg-white p-3 border rounded">
-        <p className="card-text mb-2 fw-bold">Estructura del CSV (columnas relevantes):</p>
+        <p className="card-text mb-2 fw-bold">Estructura del CSV (columna 22: LEGAL, opcional):</p>
         <div className="table-responsive mb-3">
           <table className="table table-bordered table-sm table-striped align-middle" style={{ fontSize: '0.8rem' }}>
             <thead className="table-dark">
@@ -123,6 +129,7 @@ export default function Huinchas() {
                 ['6', 'LLAMADO HTML', 'Hasta 55% dscto'],
                 ['7', 'MOBILE', 'SI'],
                 ['21', 'LINK', '/celulares/smartphones/smartphone/'],
+                ['22', 'LEGAL (opcional)', '10 cuotas sin interés en productos seleccionados'],
               ].map(([idx, campo, ej]) => (
                 <tr key={idx}>
                   <td>{idx}</td>
@@ -137,7 +144,7 @@ export default function Huinchas() {
           <strong>Ejemplo CSV:</strong>
         </p>
         <code className="d-block bg-light p-2 rounded" style={{ fontSize: '0.75rem', wordBreak: 'break-all' }}>
-          4 DESK - 2 MOB,CYBER,TELEFONÍA,images/Home/2026/10/papitas/hero/banner-smartphones_,Celulares,Hasta 55% dscto,SI,959678001,HONOR,400 Lite 256 GB / 5G,,329990,239990,,,,0,272735537440528,1,,/celulares/smartphones/smartphone/|
+          4 DESK - 2 MOB,CYBER,TELEFONÍA,images/Home/2026/10/papitas/hero/banner-smartphones_,Celulares,Hasta 55% dscto,SI,959678001,HONOR,400 Lite 256 GB / 5G,,329990,239990,,,,0,272735537440528,1,,/celulares/smartphones/smartphone/,"10 cuotas sin interés con Tarjeta Hites | CAE 1,44"|
         </code>
       </div>
 
@@ -147,7 +154,7 @@ export default function Huinchas() {
           id="huinchas-textarea-input"
           className="form-control font-monospace"
           rows={5}
-          placeholder="Pega aquí las filas copiadas desde tu planilla (CSV o tabuladas)..."
+          placeholder="Pega el CSV completo, con o sin encabezado (también acepta filas tabuladas)..."
           value={datosExcel}
           onChange={(e) => setDatosExcel(e.target.value)}
         />
