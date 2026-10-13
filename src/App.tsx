@@ -7,6 +7,7 @@ import Inpage from './sections/inpage/Inpage'
 import PuntosRetiro from './sections/puntosRetiro/PuntosRetiro'
 import ProcesadorImagenes from './sections/procesadorImagenes/ProcesadorImagenes'
 import Landing from './sections/landing/Landing'
+import Huinchas from './sections/huinchas/Huinchas'
 
 const SECCIONES_DISPONIBLES = [
   { id: 'cabeceras', nombre: '🏷️ Cabeceras HTML' },
@@ -15,6 +16,7 @@ const SECCIONES_DISPONIBLES = [
   { id: 'inpage', nombre: '📄 Inpage HTML' },
   { id: 'landing', nombre: '🛍️ Creador de landings' },
   { id: 'puntos', nombre: '📍 Puntos de Retiro' },
+  { id: 'huinchas', nombre: '🖼️ Huinchas Hero' },
   { id: 'imagenes', nombre: '🖼️ Procesar imágenes' }
 ]
 
@@ -49,7 +51,8 @@ function App() {
              seccionActiva === 'cuponesCyber' ? '🛒 Cuponera Cyber HTML' :
              seccionActiva === 'inpage' ? '📄 Inpage HTML' :
              seccionActiva === 'landing' ? '🛍️ Creador de landings' :
-             seccionActiva === 'puntos' ? '📍 Puntos de Retiro' : '🖼️ Procesar imágenes'}
+             seccionActiva === 'puntos' ? '📍 Puntos de Retiro' :
+             seccionActiva === 'huinchas' ? '🖼️ Huinchas Hero' : '🖼️ Procesar imágenes'}
           </h1>
           <p className="text-muted mb-4">Herramienta de automatización modular.</p>
 
@@ -60,6 +63,7 @@ function App() {
           {seccionActiva === 'inpage' && <Inpage />}
           {seccionActiva === 'landing' && <Landing />}
           {seccionActiva === 'puntos' && <PuntosRetiro />}
+          {seccionActiva === 'huinchas' && <Huinchas />}
           {seccionActiva === 'imagenes' && <ProcesadorImagenes />}
         </main>
 

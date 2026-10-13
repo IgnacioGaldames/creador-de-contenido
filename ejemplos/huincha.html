@@ -1,0 +1,20 @@
+<!--hero-smartphone-->
+<!--cont-asset-hero-2026-10-14-papitas-smartphones-->
+<!-- SRC = images/Home/2026/10/papitas/hero/{IMAGEN}?$staticlink$-->
+<div class="clp-hero-banner">
+  <a href="{LINK}">
+    <picture class="slider-hites">
+      <!-- Imagen para móviles (hasta 767px) -->
+      <source srcset="{RUTA_IMAGEN}-mob.webp" media="(max-width: 767.98px)">
+      <!-- Imagen para escritorio (desde 768px en adelante) -->
+      <source srcset="{RUTA_IMAGEN}.webp" media="(min-width: 768px)">
+      <!-- Imagen de fallback para navegadores que no soportan <picture> -->
+      <img fetchpriority="high" loading="eager" decoding="async" src="{RUTA_IMAGEN}.webp" class="img-fluid"
+        alt="{KV GRÁFICA} {CATEGORÍA HTML} {LLAMADO HTML}" title="{CATEGORÍA HTML} {LLAMADO HTML}"
+        data-department="{ÁREA / DEPARTAMENTO}" data-position="1" data-size="12" data-zone="hero">
+    </picture>
+  </a>
+  <!--
+  <span class="d-flex justify-content-center text-center fs-10px fs-md-11px mt-0 mt-md-n2">10 cuotas sin interés con Tarjeta Hites en productos seleccionados | CAE 1,44</span>
+  -->
+</div>

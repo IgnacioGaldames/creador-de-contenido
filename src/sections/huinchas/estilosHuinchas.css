@@ -1,0 +1,22 @@
+/* estilosHuinchas.css – Estilos para la huincha hero banner */
+.clp-hero-banner {
+  width: 100%;
+  overflow: hidden;
+}
+
+.clp-hero-banner a {
+  display: block;
+  width: 100%;
+}
+
+.slider-hites {
+  display: block;
+  width: 100%;
+}
+
+.slider-hites img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
