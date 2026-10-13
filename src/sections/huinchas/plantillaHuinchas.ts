@@ -1,5 +1,6 @@
 // src/sections/huinchas/plantillaHuinchas.ts
 import cssCrudo from './estilosHuinchas.css?raw';
+import { sentenceCase } from '../../utils/texto';
 
 /**
  * Genera el bloque HTML completo de una huincha (hero banner),
@@ -17,6 +18,7 @@ export const obtenerHtmlHuincha = (
   const srcsetMobile = tieneMobile
     ? `${rutaImagen}-mob.webp`
     : `${rutaImagen}.webp`;
+  const categoriaFormateada = sentenceCase(categoriaHtml);
 
   return `<!--hero-${kvGrafica.toLowerCase().replace(/\s+/g, '-')}-->
 <div class="clp-hero-banner">
@@ -28,7 +30,7 @@ export const obtenerHtmlHuincha = (
       <source srcset="${rutaImagen}.webp" media="(min-width: 768px)">
       <!-- Imagen de fallback para navegadores que no soportan <picture> -->
       <img fetchpriority="high" loading="eager" decoding="async" src="${rutaImagen}.webp" class="img-fluid"
-        alt="${kvGrafica}- ${categoriaHtml} ${llamadoHtml}" title="${categoriaHtml} ${llamadoHtml}"
+        alt="${kvGrafica}- ${categoriaFormateada} ${llamadoHtml}" title="${categoriaFormateada} ${llamadoHtml}"
         data-department="${areaDepartamento}" data-position="1" data-size="12" data-zone="hero">
     </picture>
   </a>
