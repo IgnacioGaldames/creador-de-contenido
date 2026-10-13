@@ -4,6 +4,46 @@ import { obtenerHtmlHuincha, obtenerHtmlHuinchasCompleto } from './plantillaHuin
 import BotonGenerarCopiar from '../../components/BotonGenerarCopiar'
 import { useProcesarYCopiar } from '../../hooks/useProcesarYCopiar'
 
+const obtenerRegistros = (texto: string): string[][] => {
+  const primeraFila = texto.split(/\r?\n/).find(fila => fila.trim() !== '') ?? ''
+  const separadorColumna = primeraFila.includes('\t') ? '\t' : ','
+  const separadorFila = separadorColumna === ',' && texto.includes('|')
+    ? '|'
+    : null
+  const registros: string[][] = []
+  let registro: string[] = []
+  let columna = ''
+  let dentroDeComillas = false
+
+  for (let indice = 0; indice < texto.length; indice += 1) {
+    const caracter = texto[indice]
+
+    if (caracter === '"') {
+      if (dentroDeComillas && texto[indice + 1] === '"') {
+        columna += '"'
+        indice += 1
+      } else {
+        dentroDeComillas = !dentroDeComillas
+      }
+    } else if (!dentroDeComillas && caracter === separadorColumna) {
+      registro.push(columna.trim())
+      columna = ''
+    } else if (!dentroDeComillas && (caracter === '\n' || caracter === '\r' || caracter === separadorFila)) {
+      if (caracter === '\r' && texto[indice + 1] === '\n') indice += 1
+      registro.push(columna.trim())
+      if (registro.some(celda => celda !== '')) registros.push(registro)
+      registro = []
+      columna = ''
+    } else {
+      columna += caracter
+    }
+  }
+
+  registro.push(columna.trim())
+  if (registro.some(celda => celda !== '')) registros.push(registro)
+  return registros
+}
+
 export default function Huinchas() {
   const [datosExcel, setDatosExcel] = useState('')
   const { ejecutarCopia, copiado, generado } = useProcesarYCopiar()
@@ -19,15 +59,8 @@ export default function Huinchas() {
   const htmlGenerado = useMemo(() => {
     if (!datosExcel.trim()) return ''
 
-    const registros = datosExcel
-      .split('|')
-      .map(r => r.trim())
-      .filter(r => r !== '')
-
-    const bloques = registros
-      .map(registro => {
-        const columnas = registro.split(',')
-
+    const bloques = obtenerRegistros(datosExcel)
+      .map(columnas => {
         const rutaImagen       = columnas[3]?.trim() || ''
         const kvGrafica        = columnas[1]?.trim() || ''
         const areaDepartamento = columnas[2]?.trim() || ''
@@ -114,7 +147,7 @@ export default function Huinchas() {
           id="huinchas-textarea-input"
           className="form-control font-monospace"
           rows={5}
-          placeholder="Pega tu CSV aquí (una o más filas separadas por |)..."
+          placeholder="Pega aquí las filas copiadas desde tu planilla (CSV o tabuladas)..."
           value={datosExcel}
           onChange={(e) => setDatosExcel(e.target.value)}
         />
