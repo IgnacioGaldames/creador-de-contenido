@@ -28,7 +28,7 @@ export const obtenerHtmlHuincha = (
       <source srcset="${rutaImagen}.webp" media="(min-width: 768px)">
       <!-- Imagen de fallback para navegadores que no soportan <picture> -->
       <img fetchpriority="high" loading="eager" decoding="async" src="${rutaImagen}.webp" class="img-fluid"
-        alt="${kvGrafica} ${categoriaHtml} ${llamadoHtml}" title="${categoriaHtml} ${llamadoHtml}"
+        alt="${kvGrafica}- ${categoriaHtml} ${llamadoHtml}" title="${categoriaHtml} ${llamadoHtml}"
         data-department="${areaDepartamento}" data-position="1" data-size="12" data-zone="hero">
     </picture>
   </a>
