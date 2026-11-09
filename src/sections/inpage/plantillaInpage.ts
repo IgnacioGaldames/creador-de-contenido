@@ -15,7 +15,8 @@ export const generarBloqueImagen = (
   descripcion: string
 ): string => {
   const anioActual = new Date().getFullYear();
-  const rutaBase = `images/inpages/${anioActual}/${depto}/${sku}/${nombreArchivo}?$staticlink$`;
+  const nombreWebp = nombreArchivo.replace(/\.[^/.]+$/, '.webp');
+  const rutaBase = `images/inpages/${anioActual}/${depto}/${sku}/${nombreWebp}?$staticlink$`;
 
   const bloqueH2 = titulo.trim()
     ? `\n          <h2>${titulo.trim()}</h2>`
