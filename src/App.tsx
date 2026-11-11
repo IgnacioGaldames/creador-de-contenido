@@ -10,18 +10,18 @@ import Landing from './sections/landing/Landing'
 import Huinchas from './sections/huinchas/Huinchas'
 
 const SECCIONES_DISPONIBLES = [
+  { id: 'imagenes', nombre: '🖼️ Procesar imágenes' },
   { id: 'cabeceras', nombre: '🏷️ Cabeceras HTML' },
   { id: 'cupones', nombre: '🎫 Cupones HTML' },
   { id: 'cuponesCyber', nombre: '🛒 Cuponera Cyber HTML' },
   { id: 'inpage', nombre: '📄 Inpage HTML' },
   { id: 'landing', nombre: '🛍️ Creador de landings' },
   { id: 'puntos', nombre: '📍 Puntos de Retiro' },
-  { id: 'huinchas', nombre: '🖼️ Huinchas Hero' },
-  { id: 'imagenes', nombre: '🖼️ Procesar imágenes' }
+  { id: 'huinchas', nombre: '🖼️ Huinchas Hero' }
 ]
 
 function App() {
-  const [seccionActiva, setSeccionActiva] = useState('cupones')
+  const [seccionActiva, setSeccionActiva] = useState('imagenes')
 
   return (
     <div className="container-fluid p-0">
