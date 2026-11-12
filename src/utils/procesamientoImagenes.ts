@@ -1,7 +1,8 @@
 export type FormatoImagen = 'webp' | 'jpeg' | 'png'
 
 export type OpcionesProcesamiento = {
-  ancho: number
+  ancho?: number
+  mantenerTamano?: boolean
   formato: FormatoImagen
   calidad: number
 }
@@ -42,8 +43,13 @@ export async function procesarImagen(
   opciones: OpcionesProcesamiento,
 ): Promise<ResultadoImagen> {
   const imagen = await cargarImagen(archivo)
-  const ancho = Math.max(1, Math.round(opciones.ancho))
-  const alto = Math.max(1, Math.round((imagen.naturalHeight / imagen.naturalWidth) * ancho))
+  const mantenerTamano = Boolean(opciones.mantenerTamano)
+  const ancho = mantenerTamano
+    ? imagen.naturalWidth
+    : Math.max(1, Math.round(opciones.ancho ?? imagen.naturalWidth))
+  const alto = mantenerTamano
+    ? imagen.naturalHeight
+    : Math.max(1, Math.round((imagen.naturalHeight / imagen.naturalWidth) * ancho))
   const canvas = document.createElement('canvas')
   canvas.width = ancho
   canvas.height = alto

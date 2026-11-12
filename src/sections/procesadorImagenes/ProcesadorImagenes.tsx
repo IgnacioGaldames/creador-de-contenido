@@ -27,7 +27,9 @@ function descargar(blob: Blob, nombre: string) {
 
 function ProcesadorImagenes() {
   const [imagenes, setImagenes] = useState<ImagenProcesada[]>([])
+  const [archivosCargados, setArchivosCargados] = useState<File[]>([])
   const [ancho, setAncho] = useState(700)
+  const [mantenerTamano, setMantenerTamano] = useState(false)
   const [formato, setFormato] = useState<FormatoImagen>('webp')
   const [calidad, setCalidad] = useState(0.8)
   const [procesando, setProcesando] = useState(false)
@@ -39,7 +41,15 @@ function ProcesadorImagenes() {
     imagenes.forEach((imagen) => URL.revokeObjectURL(imagen.url))
   }, [imagenes])
 
-  const procesarArchivos = async (archivos: File[]) => {
+  const procesarArchivos = async (
+    archivos: File[],
+    configuracion?: {
+      ancho?: number
+      mantenerTamano?: boolean
+      formato?: FormatoImagen
+      calidad?: number
+    },
+  ) => {
     const archivosImagen = archivos.filter((archivo) => archivo.type.startsWith('image/'))
     if (!archivosImagen.length) {
       setError('Selecciona al menos un archivo de imagen compatible.')
@@ -47,10 +57,19 @@ function ProcesadorImagenes() {
     }
     setError('')
     setProcesando(true)
+    setArchivosCargados(archivosImagen)
+
+    const confFinal = {
+      ancho: configuracion?.ancho ?? ancho,
+      mantenerTamano: configuracion?.mantenerTamano ?? mantenerTamano,
+      formato: configuracion?.formato ?? formato,
+      calidad: configuracion?.calidad ?? calidad,
+    }
+
     const resultados: ImagenProcesada[] = []
     for (const archivo of archivosImagen) {
       try {
-        const resultado = await procesarImagen(archivo, { ancho, formato, calidad })
+        const resultado = await procesarImagen(archivo, confFinal)
         resultados.push({
           ...resultado,
           id: `${archivo.name}-${archivo.lastModified}-${resultados.length}`,
@@ -77,6 +96,26 @@ function ProcesadorImagenes() {
     event.preventDefault()
     setArrastrando(false)
     void procesarArchivos(Array.from(event.dataTransfer.files))
+  }
+
+  const cambiarMantenerTamano = (activado: boolean) => {
+    setMantenerTamano(activado)
+    if (archivosCargados.length > 0) {
+      void procesarArchivos(archivosCargados, { mantenerTamano: activado })
+    }
+  }
+
+  const cambiarFormato = (nuevoFormato: FormatoImagen) => {
+    setFormato(nuevoFormato)
+    if (archivosCargados.length > 0) {
+      void procesarArchivos(archivosCargados, { formato: nuevoFormato })
+    }
+  }
+
+  const reprocesarSiHayArchivos = (override?: { ancho?: number; calidad?: number }) => {
+    if (archivosCargados.length > 0) {
+      void procesarArchivos(archivosCargados, override)
+    }
   }
 
   const descargarZip = async () => {
@@ -107,25 +146,76 @@ function ProcesadorImagenes() {
             <input ref={inputRef} type="file" accept="image/*" multiple hidden onChange={seleccionarArchivos} />
           </div>
 
-          <div className="row g-3 mt-2">
+          <div className="row g-3 mt-2 align-items-start">
             <div className="col-sm-4">
-              <label className="form-label fw-semibold" htmlFor="ancho-imagen">Ancho (px)</label>
-              <input id="ancho-imagen" className="form-control" type="number" min="1" value={ancho} onChange={(event) => setAncho(Number(event.target.value))} />
+              <label className="form-label fw-semibold" htmlFor="ancho-imagen">
+                Ancho (px)
+              </label>
+              <input
+                id="ancho-imagen"
+                className="form-control"
+                type="number"
+                min="1"
+                value={ancho}
+                disabled={mantenerTamano}
+                placeholder={mantenerTamano ? 'Original' : ''}
+                onChange={(event) => setAncho(Number(event.target.value))}
+                onBlur={() => reprocesarSiHayArchivos()}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') reprocesarSiHayArchivos()
+                }}
+              />
+              <div className="form-check form-switch mt-2">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="mantener-tamano"
+                  checked={mantenerTamano}
+                  onChange={(event) => cambiarMantenerTamano(event.target.checked)}
+                />
+                <label className="form-check-label small" htmlFor="mantener-tamano">
+                  Mantener tamaño original
+                </label>
+              </div>
             </div>
             <div className="col-sm-4">
               <label className="form-label fw-semibold" htmlFor="formato-imagen">Formato</label>
-              <select id="formato-imagen" className="form-select" value={formato} onChange={(event) => setFormato(event.target.value as FormatoImagen)}>
+              <select
+                id="formato-imagen"
+                className="form-select"
+                value={formato}
+                onChange={(event) => cambiarFormato(event.target.value as FormatoImagen)}
+              >
                 <option value="webp">WebP</option>
                 <option value="jpeg">JPEG</option>
                 <option value="png">PNG</option>
               </select>
             </div>
             <div className="col-sm-4">
-              <label className="form-label fw-semibold" htmlFor="calidad-imagen">Calidad: {formato === 'png' ? 'sin pérdida' : `${Math.round(calidad * 100)}%`}</label>
-              <input id="calidad-imagen" className="form-range mt-2" type="range" min="0.2" max="1" step="0.05" value={calidad} disabled={formato === 'png'} onChange={(event) => setCalidad(Number(event.target.value))} />
+              <label className="form-label fw-semibold" htmlFor="calidad-imagen">
+                Calidad: {formato === 'png' ? 'sin pérdida' : `${Math.round(calidad * 100)}%`}
+              </label>
+              <input
+                id="calidad-imagen"
+                className="form-range mt-2"
+                type="range"
+                min="0.2"
+                max="1"
+                step="0.05"
+                value={calidad}
+                disabled={formato === 'png'}
+                onChange={(event) => setCalidad(Number(event.target.value))}
+                onMouseUp={() => reprocesarSiHayArchivos()}
+                onTouchEnd={() => reprocesarSiHayArchivos()}
+              />
             </div>
           </div>
-          <p className="small text-muted mb-0 mt-2">Las imágenes se procesan localmente y conservan su proporción.</p>
+          <p className="small text-muted mb-0 mt-2">
+            {mantenerTamano
+              ? 'Se mantendrán las dimensiones originales de cada imagen (ancho y alto en px), optimizando únicamente su peso.'
+              : 'Las imágenes se procesan localmente y conservan su proporción.'}
+          </p>
 
           {error && <div className="alert alert-warning mt-4 mb-0">{error}</div>}
           {procesando && <div className="alert alert-info mt-4 mb-0">Procesando imágenes...</div>}
