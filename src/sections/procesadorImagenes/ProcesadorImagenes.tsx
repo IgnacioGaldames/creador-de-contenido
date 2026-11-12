@@ -156,7 +156,7 @@ function ProcesadorImagenes() {
                 className="form-control"
                 type="number"
                 min="1"
-                value={ancho}
+                value={mantenerTamano ? '' : ancho}
                 disabled={mantenerTamano}
                 placeholder={mantenerTamano ? 'Original' : ''}
                 onChange={(event) => setAncho(Number(event.target.value))}
@@ -216,6 +216,9 @@ function ProcesadorImagenes() {
               ? 'Se mantendrán las dimensiones originales de cada imagen (ancho y alto en px), optimizando únicamente su peso.'
               : 'Las imágenes se procesan localmente y conservan su proporción.'}
           </p>
+          <p className="small text-muted mb-0 mt-1">
+            En WebP y JPEG, la calidad indicada es el máximo: si el resultado pesa más que el original, se ajusta gradualmente para buscar una reducción. Si no es posible reducir una imagen sin aumentar su peso, se conserva el original cuando se mantiene el formato y el tamaño.
+          </p>
 
           {error && <div className="alert alert-warning mt-4 mb-0">{error}</div>}
           {procesando && <div className="alert alert-info mt-4 mb-0">Procesando imágenes...</div>}
@@ -228,7 +231,13 @@ function ProcesadorImagenes() {
               </div>
               <div className="row g-3">
                 {imagenes.map((imagen) => {
-                  const reduccion = Math.max(0, Math.round((1 - imagen.blob.size / imagen.tamanoOriginal) * 100))
+                  const diferenciaBytes = imagen.blob.size - imagen.tamanoOriginal
+                  const porcentajeCambio = Math.abs((diferenciaBytes / imagen.tamanoOriginal) * 100)
+                  const porcentajeTexto = diferenciaBytes > 0
+                    ? `+${porcentajeCambio.toFixed(1)}%`
+                    : diferenciaBytes < 0
+                      ? `-${porcentajeCambio.toFixed(1)}%`
+                      : '0.0%'
                   return (
                     <div className="col-sm-6 col-lg-4" key={imagen.id}>
                       <div className="card h-100">
@@ -236,7 +245,18 @@ function ProcesadorImagenes() {
                         <div className="card-body">
                           <p className="small fw-semibold text-truncate mb-2" title={imagen.nombre}>{imagen.nombre}</p>
                           <p className="small text-muted mb-2">{imagen.ancho} × {imagen.alto} px</p>
-                          <p className="small mb-3">{formatearTamano(imagen.tamanoOriginal)} → {formatearTamano(imagen.blob.size)} <span className="text-success">(-{reduccion}%)</span></p>
+                          <p className="small mb-3">
+                            {formatearTamano(imagen.tamanoOriginal)} → {formatearTamano(imagen.blob.size)}{' '}
+                            <span className={diferenciaBytes > 0 ? 'text-danger fw-semibold' : diferenciaBytes < 0 ? 'text-success fw-semibold' : 'text-muted'}>
+                              ({porcentajeTexto})
+                            </span>
+                            {imagen.originalConservado && (
+                              <span className="d-block text-muted mt-1">Ya estaba optimizada para este formato; se conservó el original sin pérdida.</span>
+                            )}
+                            {imagen.calidadAplicada !== undefined && imagen.calidadAplicada !== Math.round(calidad * 100) && (
+                              <span className="d-block text-muted mt-1">Calidad aplicada: {imagen.calidadAplicada}%</span>
+                            )}
+                          </p>
                           <button className="btn btn-outline-primary btn-sm w-100" type="button" onClick={() => descargar(imagen.blob, imagen.nombre)}>Descargar imagen</button>
                         </div>
                       </div>
